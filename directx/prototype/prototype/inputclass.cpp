@@ -21,8 +21,11 @@ InputClass::~InputClass()
 
 void InputClass::Initialize()
 {
+	int i;
+	
+
 	// Initialize all the keys to being released and not pressed.
-	for(int i=0; i<256; i++)
+	for(i=0; i<256; i++)
 	{
 		m_keys[i] = false;
 	}

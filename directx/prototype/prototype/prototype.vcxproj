@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2b8bb761-c3ed-4662-a231-9474faea0a56}</ProjectGuid>
-    <RootNamespace>tetris</RootNamespace>
+    <ProjectGuid>{020f2ba4-b7b9-41d3-9fb0-e06ec3b34858}</ProjectGuid>
+    <RootNamespace>prototype</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <DisableSpecificWarnings>28251;26495;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>26495;6001;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,19 +128,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="d3dclass.cpp" />
-    <ClCompile Include="graphicsclass.cpp" />
-    <ClCompile Include="inputclass.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="rootcomponentclass.cpp" />
-    <ClCompile Include="systemclass.cpp" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\AlignedAllocationPolicy.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\cameraclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\colorshaderclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\d3dclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\DDSTextureLoader.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\graphicsclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\inputclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\lightclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\lightshaderclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\modelclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\systemclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\textureclass.h" />
+    <ClInclude Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\textureshaderclass.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="d3dclass.h" />
-    <ClInclude Include="graphicsclass.h" />
-    <ClInclude Include="inputclass.h" />
-    <ClInclude Include="rootcomponentclass.h" />
-    <ClInclude Include="systemclass.h" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\cameraclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\colorshaderclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\d3dclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\DDSTextureLoader.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\graphicsclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\inputclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\lightclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\lightshaderclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\main.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\modelclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\systemclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\textureclass.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\..\school\graphics\Tutorial Lighting-20220930\CGP-Tutorial-Specular-Src\textureshaderclass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

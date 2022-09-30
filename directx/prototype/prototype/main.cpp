@@ -1,25 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Filename: main.cpp
 ////////////////////////////////////////////////////////////////////////////////
-#include <memory>
-
 #include "systemclass.h"
 
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) 
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
-	auto system = std::make_unique<SystemClass>();
+	SystemClass* System;
 	bool result;
+	
+	
+	// Create the system object.
+	System = new SystemClass;
+	if(!System)
+	{
+		return 0;
+	}
 
 	// Initialize and run the system object.
-	result = system->Initialize();
+	result = System->Initialize();
 	if(result)
 	{
-		system->Run();
+		System->Run();
 	}
 
 	// Shutdown and release the system object.
-	system->Shutdown();
+	System->Shutdown();
+	delete System;
+	System = 0;
 
 	return 0;
 }

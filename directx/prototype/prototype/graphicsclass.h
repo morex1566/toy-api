@@ -5,12 +5,16 @@
 #define _GRAPHICSCLASS_H_
 
 
-//////////////
-// INCLUDES //
-//////////////
-#include <windows.h>
-#include <memory>
+///////////////////////
+// MY CLASS INCLUDES //
+///////////////////////
 #include "d3dclass.h"
+#include "cameraclass.h"
+#include "modelclass.h"
+#include "lightshaderclass.h"
+#include "lightclass.h"
+
+
 /////////////
 // GLOBALS //
 /////////////
@@ -35,10 +39,15 @@ public:
 	bool Frame();
 
 private:
-	bool Render();
+	bool Render(float);
 
 private:
-	std::unique_ptr<D3DClass> m_D3D;
+	D3DClass* m_D3D;
+	CameraClass* m_Camera;
+	ModelClass* m_Model;
+
+	LightShaderClass* m_LightShader;
+	LightClass* m_Light;
 };
 
 #endif
