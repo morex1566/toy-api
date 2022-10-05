@@ -17,13 +17,15 @@ using namespace DirectX;
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "textureclass.h"
+#include "GameObject.h"
+#include "UniversalType.h"
 
 #include <fstream>
-using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass
 ////////////////////////////////////////////////////////////////////////////////
+
 class ModelClass
 {
 private:
@@ -41,14 +43,8 @@ private:
 		int nIndex1, nIndex2, nIndex3;
 	};
 
-	struct ModelType
-	{
-		float x, y, z;
-		float tu, tv;
-		float nx, ny, nz;
-	};
-
 public:
+
 	ModelClass();
 	ModelClass(const ModelClass&);
 	~ModelClass();
