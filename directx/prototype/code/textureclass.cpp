@@ -8,30 +8,28 @@ using namespace DirectX;
 
 TextureClass::TextureClass()
 {
-	m_texture = 0;
 }
-
-
 TextureClass::TextureClass(const TextureClass& other)
 {
 }
-
-
 TextureClass::~TextureClass()
 {
 }
 
 
-bool TextureClass::Initialize(ID3D11Device* device, const WCHAR* filename)
+bool TextureClass::Initialize(ID3D11Device* device, const WCHAR* filename, GameObject* gameObject)
 {
 	HRESULT result;
+	ID3D11ShaderResourceView* texture;
 
 	// Load texture data from a file by using DDS texture loader.
-	result = CreateDDSTextureFromFile(device, filename, nullptr, &m_texture);
+	result = CreateDDSTextureFromFile(device, filename, nullptr, &texture);
 	if (FAILED(result))
 	{
 		return false;
 	}
+
+	gameObject->SetTexture(texture);
 
 	return true;
 }
@@ -39,18 +37,5 @@ bool TextureClass::Initialize(ID3D11Device* device, const WCHAR* filename)
 
 void TextureClass::Shutdown()
 {
-	// Release the texture resource.
-	if(m_texture)
-	{
-		m_texture->Release();
-		m_texture = 0;
-	}
-
 	return;
-}
-
-
-ID3D11ShaderResourceView* TextureClass::GetTexture()
-{
-	return m_texture;
 }

@@ -1,19 +1,10 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: modelclass.cpp
-////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
 
 
 ModelClass::ModelClass()
 {
-	m_vertexBuffer = 0;
-	m_indexBuffer = 0;
-	m_Texture = 0;
-	m_model = 0;
-
-	m_textureCount = 0;
-	m_normalCount = 0;
-	m_faceCount = 0;
+	m_vertexBuffer = nullptr;
+	m_indexBuffer = nullptr;
 }
 
 
@@ -24,12 +15,20 @@ ModelClass::ModelClass(const ModelClass& other)
 
 ModelClass::~ModelClass()
 {
+	DestroyVector<GameObject*>(gameObjectList);
 }
 
 
 bool ModelClass::Initialize(ID3D11Device* device, const WCHAR* modelFilename, const WCHAR* textureFilename)
 {
 	bool result;
+
+	// Create the texture object.
+	m_TextureManager = new TextureClass;
+	if (!m_TextureManager)
+	{
+		return false;
+	}
 
 	// Load in the model data,
 	result = LoadModel(modelFilename);
@@ -40,7 +39,7 @@ bool ModelClass::Initialize(ID3D11Device* device, const WCHAR* modelFilename, co
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
-	if(!result)
+	if (!result)
 	{
 		return false;
 	}
@@ -82,13 +81,7 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 
 int ModelClass::GetIndexCount()
 {
-	return m_indexCount;
-}
-
-
-ID3D11ShaderResourceView* ModelClass::GetTexture()
-{
-	return m_Texture->GetTexture();
+	return counter.indexCount;
 }
 
 
@@ -99,35 +92,37 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
     D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
+	const ModelType* model;
 	int i;
 
 	// Create the vertex array.
-	vertices = new VertexType[m_vertexCount];
+	vertices = new VertexType[counter.vertexCount];
 	if(!vertices)
 	{
 		return false;
 	}
 
 	// Create the index array.
-	indices = new unsigned long[m_indexCount];
+	indices = new unsigned long[counter.indexCount];
 	if(!indices)
 	{
 		return false;
 	}
 
+	model = gameObjectList.back()->GetModel();
 	// Load the vertex array and index array with data.
-	for (i = 0; i < m_vertexCount; i++)
+	for (i = 0; i < counter.vertexCount; i++)
 	{
-		vertices[i].position = XMFLOAT3(m_model[i].x, m_model[i].y, m_model[i].z);
-		vertices[i].texture = XMFLOAT2(m_model[i].tu, m_model[i].tv);
-		vertices[i].normal = XMFLOAT3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
+		vertices[i].position = XMFLOAT3(model[i].x, model[i].y, model[i].z);
+		vertices[i].texture = XMFLOAT2(model[i].tu, model[i].tv);
+		vertices[i].normal = XMFLOAT3(model[i].nx, model[i].ny, model[i].nz);
 
 		indices[i] = i;
 	}
 
 	// Set up the description of the static vertex buffer.
     vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
+    vertexBufferDesc.ByteWidth = sizeof(VertexType) * counter.vertexCount;
     vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     vertexBufferDesc.CPUAccessFlags = 0;
     vertexBufferDesc.MiscFlags = 0;
@@ -147,7 +142,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	// Set up the description of the static index buffer.
     indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
+    indexBufferDesc.ByteWidth = sizeof(unsigned long) * counter.indexCount;
     indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     indexBufferDesc.CPUAccessFlags = 0;
     indexBufferDesc.MiscFlags = 0;
@@ -223,16 +218,8 @@ bool ModelClass::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 {
 	bool result;
 
-
-	// Create the texture object.
-	m_Texture = new TextureClass;
-	if(!m_Texture)
-	{
-		return false;
-	}
-
 	// Initialize the texture object.
-	result = m_Texture->Initialize(device, filename);
+	result = m_TextureManager->Initialize(device, filename, gameObjectList.back());
 	if(!result)
 	{
 		return false;
@@ -244,14 +231,6 @@ bool ModelClass::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 
 void ModelClass::ReleaseTexture()
 {
-	// Release the texture object.
-	if(m_Texture)
-	{
-		m_Texture->Shutdown();
-		delete m_Texture;
-		m_Texture = 0;
-	}
-
 	return;
 }
 
@@ -264,13 +243,12 @@ bool ModelClass::LoadModel(const WCHAR* filename)
 
 void ModelClass::ReleaseModel()
 {
-	if (m_model)
-	{
-		delete[] m_model;
-		m_model = 0;
-	}
-
 	return;
+}
+
+vector<GameObject*> ModelClass::GetGameObjectList()
+{
+	return gameObjectList;
 }
 
 bool ModelClass::ReadFileCounts(const WCHAR* filename)
@@ -336,6 +314,7 @@ bool ModelClass::LoadDataStructures(const WCHAR* filename, int vertexCount, int 
 	int vertexIndex, texcoordIndex, normalIndex, faceIndex, vIndex, tIndex, nIndex;
 	char input, input2;
 	ofstream fout;
+	ModelType* model;
 
 	// Initialize the four data structures.
 	vertices = new XMFLOAT3[vertexCount];
@@ -446,24 +425,16 @@ bool ModelClass::LoadDataStructures(const WCHAR* filename, int vertexCount, int 
 		fin.get(input);
 	}
 
-	//// Close the file.
-	//fin.close();
-	//// Open the output file.
-	//fout.open("model.txt");
-	//// Write out the file header that our model format uses.
-	//fout << "Vertex Count: " << (faceCount * 3) << endl;
-	//fout << endl;
-	//fout << "Data:" << endl;
-	//fout << endl;
-
-	m_vertexCount = faceCount * 3;
+	counter.vertexCount = faceCount * 3;
 
 	// Set the number of indices to be the same as the vertex count.
-	m_indexCount = m_vertexCount;
+	counter.indexCount = counter.vertexCount;
 
 	// Create the model using the vertex count that was read in.
-	m_model = new ModelType[m_vertexCount];
-	if (!m_model)
+	gameObjectList.push_back(new GameObject);
+
+	model = new ModelType[counter.vertexCount];
+	if (!model)
 	{
 		return false;
 	}
@@ -474,60 +445,52 @@ bool ModelClass::LoadDataStructures(const WCHAR* filename, int vertexCount, int 
 		vIndex = faces[i].vIndex1 - 1;
 		tIndex = faces[i].tIndex1 - 1;
 		nIndex = faces[i].nIndex1 - 1;
-		//fout << vertices[vIndex].x << ' ' << vertices[vIndex].y << ' ' << vertices[vIndex].z << ' '
-		//	<< texcoords[tIndex].x << ' ' << texcoords[tIndex].y << ' '
-		//	<< normals[nIndex].x << ' ' << normals[nIndex].y << ' ' << normals[nIndex].z << endl;
 
-		m_model[i * 3].x = vertices[vIndex].x;
-		m_model[i * 3].y = vertices[vIndex].y;
-		m_model[i * 3].z = vertices[vIndex].z;
+		model[i * 3].x = vertices[vIndex].x;
+		model[i * 3].y = vertices[vIndex].y;
+		model[i * 3].z = vertices[vIndex].z;
 
-		m_model[i * 3].tu = texcoords[tIndex].x;
-		m_model[i * 3].tv = texcoords[tIndex].y;
+		model[i * 3].tu = texcoords[tIndex].x;
+		model[i * 3].tv = texcoords[tIndex].y;
 
-		m_model[i * 3].nx = normals[nIndex].x;
-		m_model[i * 3].ny = normals[nIndex].y;
-		m_model[i * 3].nz = normals[nIndex].z;
+		model[i * 3].nx = normals[nIndex].x;
+		model[i * 3].ny = normals[nIndex].y;
+		model[i * 3].nz = normals[nIndex].z;
 
 		vIndex = faces[i].vIndex2 - 1;
 		tIndex = faces[i].tIndex2 - 1;
 		nIndex = faces[i].nIndex2 - 1;
-		//fout << vertices[vIndex].x << ' ' << vertices[vIndex].y << ' ' << vertices[vIndex].z << ' '
-		//	<< texcoords[tIndex].x << ' ' << texcoords[tIndex].y << ' '
-		//	<< normals[nIndex].x << ' ' << normals[nIndex].y << ' ' << normals[nIndex].z << endl;
 
-		m_model[i * 3 + 1].x = vertices[vIndex].x;
-		m_model[i * 3 + 1].y = vertices[vIndex].y;
-		m_model[i * 3 + 1].z = vertices[vIndex].z;
+		model[i * 3 + 1].x = vertices[vIndex].x;
+		model[i * 3 + 1].y = vertices[vIndex].y;
+		model[i * 3 + 1].z = vertices[vIndex].z;
 
-		m_model[i * 3 + 1].tu = texcoords[tIndex].x;
-		m_model[i * 3 + 1].tv = texcoords[tIndex].y;
+		model[i * 3 + 1].tu = texcoords[tIndex].x;
+		model[i * 3 + 1].tv = texcoords[tIndex].y;
 
-		m_model[i * 3 + 1].nx = normals[nIndex].x;
-		m_model[i * 3 + 1].ny = normals[nIndex].y;
-		m_model[i * 3 + 1].nz = normals[nIndex].z;
+		model[i * 3 + 1].nx = normals[nIndex].x;
+		model[i * 3 + 1].ny = normals[nIndex].y;
+		model[i * 3 + 1].nz = normals[nIndex].z;
 
 		vIndex = faces[i].vIndex3 - 1;
 		tIndex = faces[i].tIndex3 - 1;
 		nIndex = faces[i].nIndex3 - 1;
-		//fout << vertices[vIndex].x << ' ' << vertices[vIndex].y << ' ' << vertices[vIndex].z << ' '
-		//	<< texcoords[tIndex].x << ' ' << texcoords[tIndex].y << ' '
-		//	<< normals[nIndex].x << ' ' << normals[nIndex].y << ' ' << normals[nIndex].z << endl;
 
-		m_model[i * 3 + 2].x = vertices[vIndex].x;
-		m_model[i * 3 + 2].y = vertices[vIndex].y;
-		m_model[i * 3 + 2].z = vertices[vIndex].z;
+		model[i * 3 + 2].x = vertices[vIndex].x;
+		model[i * 3 + 2].y = vertices[vIndex].y;
+		model[i * 3 + 2].z = vertices[vIndex].z;
 
-		m_model[i * 3 + 2].tu = texcoords[tIndex].x;
-		m_model[i * 3 + 2].tv = texcoords[tIndex].y;
+		model[i * 3 + 2].tu = texcoords[tIndex].x;
+		model[i * 3 + 2].tv = texcoords[tIndex].y;
 
-		m_model[i * 3 + 2].nx = normals[nIndex].x;
-		m_model[i * 3 + 2].ny = normals[nIndex].y;
-		m_model[i * 3 + 2].nz = normals[nIndex].z;
+		model[i * 3 + 2].nx = normals[nIndex].x;
+		model[i * 3 + 2].ny = normals[nIndex].y;
+		model[i * 3 + 2].nz = normals[nIndex].z;
 	}
 
-	//// Close the output file.
-	//fout.close();
+	gameObjectList.back()->SetModel(model);
+
+	fout.close();
 
 	// Release the four data structures.
 	if (vertices)

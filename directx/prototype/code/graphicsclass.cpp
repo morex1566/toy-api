@@ -2,6 +2,7 @@
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
+#include "UniversalType.h"
 
 
 GraphicsClass::GraphicsClass()
@@ -63,7 +64,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), L"./data/cube.obj", L"./data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), L"./resource/cube.obj", L"./resource/seafloor.dds");
 //	result = m_Model->Initialize(m_D3D->GetDevice(), L"./data/chair.obj", L"./data/chair_d.dds");
 	if(!result)
 	{
@@ -200,7 +201,7 @@ bool GraphicsClass::Render(float rotation)
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), 
 		worldMatrix, viewMatrix, projectionMatrix,
-		m_Model->GetTexture(), 
+		m_Model->GetGameObjectList(),
 		m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	

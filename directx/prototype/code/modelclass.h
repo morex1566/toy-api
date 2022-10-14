@@ -1,30 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-// Filename: modelclass.h
-////////////////////////////////////////////////////////////////////////////////
-#ifndef _MODELCLASS_H_
-#define _MODELCLASS_H_
+#pragma once
 
-
-//////////////
-// INCLUDES //
-//////////////
 #include <d3d11.h>
 #include <directxmath.h>
-
-using namespace DirectX;
-
-///////////////////////
-// MY CLASS INCLUDES //
-///////////////////////
-#include "textureclass.h"
-#include "GameObject.h"
-#include "UniversalType.h"
-
 #include <fstream>
 
-////////////////////////////////////////////////////////////////////////////////
-// Class name: ModelClass
-////////////////////////////////////////////////////////////////////////////////
+#include "textureclass.h"
+#include "GameObject.h"
+
+using namespace DirectX;
 
 class ModelClass
 {
@@ -32,15 +15,21 @@ private:
 	struct VertexType
 	{
 		XMFLOAT3 position;
-	    XMFLOAT2 texture;
+		XMFLOAT2 texture;
 		XMFLOAT3 normal;
 	};
-
 	struct FaceType
 	{
 		int vIndex1, vIndex2, vIndex3;
 		int tIndex1, tIndex2, tIndex3;
 		int nIndex1, nIndex2, nIndex3;
+	};
+	struct ObjectCount
+	{
+		int vertexCount;
+		int indexCount;
+		int textureCount;
+		int faceCount;
 	};
 
 public:
@@ -54,12 +43,11 @@ public:
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
-	ID3D11ShaderResourceView* GetTexture();
 
 	bool LoadModel(const WCHAR*);
 	void ReleaseModel();
 
-
+	vector<GameObject*> GetGameObjectList();
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
@@ -72,11 +60,9 @@ private:
 	bool LoadDataStructures(const WCHAR*, int, int, int, int);
 
 private:
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	int m_vertexCount, m_indexCount, m_textureCount, m_normalCount, m_faceCount;
-	TextureClass* m_Texture;
-
-	ModelType* m_model;
+	vector<GameObject*>			   gameObjectList;
+	TextureClass*				   m_TextureManager;
+	ID3D11Buffer*				   m_vertexBuffer;
+	ID3D11Buffer*				   m_indexBuffer;
+	ObjectCount					   counter;
 };
-
-#endif
