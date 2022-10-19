@@ -19,6 +19,7 @@ Scene::Scene()
 
 Scene::Scene(const Scene& other)
 {
+	//update
 }
 
 
