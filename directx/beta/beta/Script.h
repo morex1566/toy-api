@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "Component.h"
+#include "Transform.h"
 
 using namespace std;
 
@@ -17,15 +18,17 @@ public:
 	virtual ~BaseScript();
 
 public:
-	virtual void Initialize();
-	virtual void Update();
+	virtual void Start() = 0;
+	virtual void Update() = 0;
 
 public:
+	void AttachGameObject(BaseGameObject*);
 	string GetName();
 	bool IsEnable();
 
 protected:
 	vector<BaseScript*> GetScriptList();
+	Transform* GetTransform();
 
 protected:
 	BaseGameObject* m_GameObject;

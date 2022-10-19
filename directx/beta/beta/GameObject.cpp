@@ -112,7 +112,10 @@ BaseGameObject* BaseGameObject::AddShader(ShaderType type, string vsRoute, strin
 
 BaseGameObject* BaseGameObject::AddScript(BaseScript* script)
 {
-	m_ScriptList.push_back(script);
+	BaseScript* temp = script;
+	temp->AttachGameObject(this);
+
+	m_ScriptList.push_back(temp);
 
 	return this;
 }
@@ -134,10 +137,18 @@ Transform* BaseGameObject::GetTransform()
 
 void BaseGameObject::Start()
 {
+	for (auto script : m_ScriptList)
+	{
+		script->Start();
+	}
 }
 
 void BaseGameObject::Update()
 {
+	for (auto script : m_ScriptList)
+	{
+		script->Update();
+	}
 }
 
 void BaseGameObject::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)

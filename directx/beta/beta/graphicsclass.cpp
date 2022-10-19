@@ -6,6 +6,8 @@
 #include "Component.h"
 #include "Shader.h"
 #include "Script.h"
+#include "Object1.h"
+#include "Object2.h"	
 
 
 Scene::Scene()
@@ -55,12 +57,30 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		(new Object(m_D3D, hwnd))
 		->AddComponent(ComponentType::Mesh, "./resources/cube.obj")
 		->AddComponent(ComponentType::Texture, "./resources/seafloor.dds")
+		->AddScript(new Object1)
+		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
+	);
+
+	// Create Cube...
+	gameObjectList.push_back(
+		(new Object(m_D3D, hwnd))
+		->AddComponent(ComponentType::Mesh, "./resources/cube.obj")
+		->AddComponent(ComponentType::Texture, "./resources/seafloor.dds")
+		->AddScript(new Object2)
 		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
 	);
 
 	// Create Light
 	gameObjectList.push_back(
 		(new Light(m_D3D, hwnd))
+	);
+
+	// Create Terrain
+	gameObjectList.push_back(
+		(new Object(m_D3D, hwnd))
+		->AddComponent(ComponentType::Mesh, "./resources/terrain.obj")
+		->AddComponent(ComponentType::Texture, "./resources/terrain.dds")
+		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
 	);
 
 	for (auto gameObject : gameObjectList)

@@ -26,8 +26,6 @@ void Object::Start()
 void Object::Update()
 {
 	BaseGameObject::Update();
-
-	m_Transform->RotateAt();
 }
 
 void Object::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)

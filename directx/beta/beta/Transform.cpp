@@ -9,7 +9,7 @@ Transform::Transform(BaseGameObject* gameObject)
 	m_World = XMMatrixIdentity();
 	m_Position = XMFLOAT3(0, 0, 0);
 	m_Rotation = XMFLOAT3(0, 0, 0);
-	m_Scale = XMFLOAT3(0, 0, 0);
+	m_Scale = XMFLOAT3(1, 1, 1);
 }
 
 Transform::Transform(const Transform&)
@@ -22,31 +22,35 @@ void Transform::Update()
 
 void Transform::TranslateAt(XMFLOAT3 position)
 {
-	XMMATRIX temp;
-	temp = XMMatrixTranslation(position.x, position.y, position.z);
-
-	m_World += temp;
-	m_Position.x += position.x;
-	m_Position.y += position.y;
-	m_Position.z += position.z;
+	m_Position.x = position.x;
+	m_Position.y = position.y;
+	m_Position.z = position.z;
 }
 
-void Transform::RotateAt(XMFLOAT3 rotation)
+void Transform::RotateAt(XMFLOAT3 angle)
 {
-	XMMATRIX temp;
-	temp = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-
-	m_World += temp;
-	m_Rotation.x += rotation.x;
-	m_Rotation.y += rotation.y;
-	m_Rotation.z += rotation.z;
+	m_Rotation.x = angle.x;
+	m_Rotation.y = angle.y;
+	m_Rotation.z = angle.z;
 }
 
-void Transform::Resize(XMFLOAT3 size)
+void Transform::Resize(XMFLOAT3 scale)
 {
-	XMMATRIX temp;
-	temp = XMMatrixScaling(size.x, size.y, size.z);
+	m_Scale.x = scale.x;
+	m_Scale.y = scale.y;
+	m_Scale.z = scale.z;
+}
 
+void Transform::Transpose(XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f),
+						  XMFLOAT3 rotation = XMFLOAT3(0.0f, 0.0f, 0.0f),
+						  XMFLOAT3 scale = XMFLOAT3(0.0f, 0.0f, 0.0f))
+{
+	XMMATRIX movement = XMMatrixTranslation(position.x, position.y, position.z);
+	XMMATRIX angle = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+	XMMATRIX size = XMMatrixScaling(scale.x, scale.y, scale.z);
+
+
+	m_World = size * angle * movement;
 }
 
 const XMMATRIX Transform::GetWorldMatrix()
