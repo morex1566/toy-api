@@ -1,15 +1,20 @@
 #include "Shader.h"
+#include "GameObject.h"
+#include "cameraclass.h"
 
-BaseShader::BaseShader()
+BaseShader::BaseShader(BaseGameObject* gameObject)
 {
+	m_GameObject = gameObject;
 }
 
 BaseShader::~BaseShader()
 {
+
 }
 
-void BaseShader::Initialize()
+bool BaseShader::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
+	return true;
 }
 
 string BaseShader::GetName()

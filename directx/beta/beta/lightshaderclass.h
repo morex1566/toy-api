@@ -23,6 +23,7 @@ using namespace DirectX;
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LightShaderClass
 ////////////////////////////////////////////////////////////////////////////////
+
 class LightShaderClass : public BaseShader
 {
 private:
@@ -49,14 +50,13 @@ private:
 	};
 
 public:
-	LightShaderClass();
+	LightShaderClass(BaseGameObject*, string, string);
 	LightShaderClass(const LightShaderClass&);
 	~LightShaderClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize();
 	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, 
-		XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT3, XMFLOAT4, float);
+	bool Render(vector<BaseGameObject*>, Camera*) override;
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
@@ -75,6 +75,9 @@ private:
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11Buffer* m_lightBuffer;
 	ID3D11Buffer* m_cameraBuffer;
+
+	string m_VSRoute;
+	string m_PSRoute;
 };
 
 #endif

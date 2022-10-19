@@ -17,10 +17,6 @@ BaseComponent::~BaseComponent()
 {
 }
 
-void BaseComponent::Initialize()
-{
-}
-
 void BaseComponent::Update()
 {
 }
@@ -33,11 +29,6 @@ string BaseComponent::GetName()
 bool BaseComponent::IsEnable()
 {
     return m_Active;
-}
-
-D3DClass* BaseComponent::GetDirectX3D()
-{
-    return m_GameObject->m_DirectX3D;
 }
 
 vector<BaseComponent*> BaseComponent::GetComponentList()

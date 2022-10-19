@@ -28,7 +28,6 @@ public:
 	virtual ~BaseComponent();
 
 public:
-	virtual void Initialize();
 	virtual void Update();
 
 public:
@@ -36,7 +35,6 @@ public:
 	bool IsEnable();
 
 protected:
-	D3DClass* GetDirectX3D();
 	vector<BaseComponent*> GetComponentList();
 	vector<BaseScript*> GetScriptList();
 	vector<BaseShader*> GetShaderList();

@@ -41,18 +41,14 @@ public:
 	string GetName();
 
 private:
-	bool Update(float);
+	bool Update();
 
 private:
-	Camera* m_MainCamera;
 	string m_Name;
 	D3DClass* m_D3D;
 	Camera* m_MainCamera;
 
 	vector<BaseGameObject*> gameObjectList;
-
-	LightShaderClass* m_LightShader;
-	LightClass* m_Light;
 };
 
 #endif

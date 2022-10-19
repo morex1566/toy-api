@@ -1,18 +1,19 @@
 #include "GameObject.h"
-#include "Renderer.h"
-#include "Transform.h"
 #include "modelclass.h"	
 #include "Collider.h"
-#include "colorshaderclass.h"
-#include "textureshaderclass.h"
 #include "lightshaderclass.h"
+#include "textureclass.h"
 
-BaseGameObject::BaseGameObject(D3DClass* directX3D)
+BaseGameObject::BaseGameObject(D3DClass* directX3D, HWND hwnd)
 {
 	m_DirectX3D = directX3D;
+	m_HWND = hwnd;
 
-	AddComponent(ComponentType::Transform);
-	AddComponent(ComponentType::Renderer);
+	m_Transform = new Transform(this);
+	m_Renderer = new Renderer(this);
+
+	AddComponent(m_Transform);
+	AddComponent(m_Renderer);
 }
 
 BaseGameObject::BaseGameObject(const BaseGameObject&)
@@ -23,6 +24,11 @@ BaseGameObject::~BaseGameObject()
 {
 	clearList(m_ShaderList);
 	clearList(m_ScriptList);
+}
+
+string BaseGameObject::GetTag()
+{
+	return m_Tag;
 }
 
 BaseScript* BaseGameObject::FindScriptWithName(string name)
@@ -53,18 +59,10 @@ BaseComponent* BaseGameObject::FindComponentWithName(string name)
 	return nullptr;
 }
 
-BaseGameObject* BaseGameObject::AddComponent(ComponentType type, string route = "")
+BaseGameObject* BaseGameObject::AddComponent(ComponentType type, string route)
 {
 	switch (type)
 	{
-	case ComponentType::Transform:
-		m_ComponentList.push_back(new Transform(this));
-		break;
-
-	case ComponentType::Renderer:
-		m_ComponentList.push_back(new Renderer(this));
-		break;
-
 	case ComponentType::Mesh:
 		m_ComponentList.push_back(new Mesh(this, route));
 		break;
@@ -80,27 +78,35 @@ BaseGameObject* BaseGameObject::AddComponent(ComponentType type, string route = 
 	default:
 		break;
 	}
+
+	return this;
 }
 
-BaseGameObject* BaseGameObject::AddShader(ShaderType type, string vsRoute = "", string psRoute = "")
+BaseGameObject* BaseGameObject::AddComponent(BaseComponent* component)
+{
+	m_ComponentList.push_back(component);
+
+	return this;
+}
+
+BaseGameObject* BaseGameObject::AddShader(ShaderType type, string vsRoute, string psRoute)
 {
 	switch (type)
 	{
 	case ShaderType::ColorShader:
-		m_ShaderList.push_back(new ColorShaderClass());
 		break;
 
 	case ShaderType::LightShader:
-		m_ShaderList.push_back(new LightShaderClass());
+		m_ShaderList.push_back(new LightShaderClass(this, vsRoute, psRoute));
 		break;
 
 	case ShaderType::TextureShader:
-		m_ShaderList.push_back(new TextureShaderClass());
 		break;
 
 	default:
 		break;
 	}
+
 	return this;
 }
 
@@ -111,31 +117,22 @@ BaseGameObject* BaseGameObject::AddScript(BaseScript* script)
 	return this;
 }
 
-void BaseGameObject::initializeComponentList()
+D3DClass* BaseGameObject::GetDirectX3D()
 {
-	for (auto component : m_ComponentList)
-	{
-		component->Initialize();
-	}
+	return m_DirectX3D;
 }
 
-void BaseGameObject::initializeShaderList()
+HWND BaseGameObject::GetHWND()
 {
-	for (auto shader : m_ShaderList)
-	{
-		shader->Initialize();
-	}
+	return m_HWND;
 }
 
-void BaseGameObject::initializeScriptList()
+Transform* BaseGameObject::GetTransform()
 {
-	for (auto script : m_ScriptList)
-	{
-		script->Initialize();
-	}
+	return m_Transform;
 }
 
-void BaseGameObject::Initialize()
+void BaseGameObject::Start()
 {
 }
 
@@ -143,8 +140,9 @@ void BaseGameObject::Update()
 {
 }
 
-void BaseGameObject::Render()
+void BaseGameObject::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
+	dynamic_cast<Renderer*>(FindComponentWithName("Renderer"))->Render(gameObjectList, camera);
 }
 
 template<typename T>

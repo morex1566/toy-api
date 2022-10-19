@@ -2,73 +2,94 @@
 // Filename: lightclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "lightclass.h"
+#include "cameraclass.h"
+
+Light::Light(D3DClass* directX3D, HWND hwnd)
+	: BaseGameObject(directX3D, hwnd)
+{
+	m_Tag = "Light";
+}
 
 
-LightClass::LightClass()
+Light::Light(const Light& other)
+	: BaseGameObject(other.m_DirectX3D, other.m_HWND)
 {
 }
 
 
-LightClass::LightClass(const LightClass& other)
+Light::~Light()
 {
 }
 
+void Light::Start()
+{
+	SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	SetDirection(1.0f, 0.0f, 1.0f);
+	SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	SetSpecularPower(32.0f);
+}
 
-LightClass::~LightClass()
+void Light::Update()
 {
 }
 
-void LightClass::SetAmbientColor(float red, float green, float blue, float alpha)
+void Light::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
+{
+	BaseGameObject::Render(gameObjectList, camera);
+}
+
+void Light::SetAmbientColor(float red, float green, float blue, float alpha)
 {
 	m_ambientColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
-void LightClass::SetDiffuseColor(float red, float green, float blue, float alpha)
+void Light::SetDiffuseColor(float red, float green, float blue, float alpha)
 {
 	m_diffuseColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
-void LightClass::SetDirection(float x, float y, float z)
+void Light::SetDirection(float x, float y, float z)
 {
 	m_direction = XMFLOAT3(x, y, z);
 	return;
 }
 
-void LightClass::SetSpecularColor(float red, float green, float blue, float alpha)
+void Light::SetSpecularColor(float red, float green, float blue, float alpha)
 {
 	m_specularColor = XMFLOAT4(red, green, blue, alpha);
 	return;
 }
 
-void LightClass::SetSpecularPower(float power)
+void Light::SetSpecularPower(float power)
 {
 	m_specularPower = power;
 	return;
 }
 
-XMFLOAT4 LightClass::GetAmbientColor()
+XMFLOAT4 Light::GetAmbientColor()
 {
 	return m_ambientColor;
 }
 
-XMFLOAT4 LightClass::GetDiffuseColor()
+XMFLOAT4 Light::GetDiffuseColor()
 {
 	return m_diffuseColor;
 }
 
-XMFLOAT3 LightClass::GetDirection()
+XMFLOAT3 Light::GetDirection()
 {
 	return m_direction;
 }
 
-XMFLOAT4 LightClass::GetSpecularColor()
+XMFLOAT4 Light::GetSpecularColor()
 {
 	return m_specularColor;
 }
 
-float LightClass::GetSpecularPower()
+float Light::GetSpecularPower()
 {
 	return m_specularPower;
 }

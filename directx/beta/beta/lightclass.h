@@ -9,19 +9,29 @@
 // INCLUDES //
 //////////////
 #include <directxmath.h>
+#include "GameObject.h"
 
 using namespace DirectX;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: LightClass
 ////////////////////////////////////////////////////////////////////////////////
-class LightClass
+class Camera;
+
+class Light : public BaseGameObject
 {
 public:
-	LightClass();
-	LightClass(const LightClass&);
-	~LightClass();
+	Light(D3DClass*, HWND);
+	Light(const Light&);
+	~Light();
 
+public:
+	void Start() override;
+	void Update() override;
+	void Render(vector<BaseGameObject*>, Camera*) override;
+
+public:
 	void SetAmbientColor(float, float, float, float);
 	void SetDiffuseColor(float, float, float, float);
 	void SetDirection(float, float, float);

@@ -9,6 +9,7 @@
 // INCLUDES //
 //////////////
 #include <directxmath.h>
+#include <vector>
 
 #include "AlignedAllocationPolicy.h"
 #include "d3dclass.h"
@@ -24,12 +25,14 @@ class Scene;
 class Camera : public AlignedAllocationPolicy<16>, public BaseGameObject
 {
 public:
-	Camera(D3DClass*, Scene*);
+	Camera(D3DClass*, HWND, Scene*);
 	Camera(const Camera&);
 	~Camera();
 
 public:
+	void Start() override;
 	void Update() override;
+	void Render(vector<BaseGameObject*>, Camera*) override;
 
 public:
 	void SetPosition(float, float, float);
@@ -38,8 +41,8 @@ public:
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetRotation();
 
-	void Render();
 	void GetViewMatrix(XMMATRIX&);
+	XMMATRIX GetViewMatrix();
 	Camera* SetAsMainCamera();
 
 private:

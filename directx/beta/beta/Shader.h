@@ -1,11 +1,14 @@
 #pragma once
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <vector>
 #include <string>
 
-#include "Script.h"
-
 using namespace DirectX;
+using namespace std;
+
+class Camera;
+class BaseGameObject;
 
 enum class ShaderType
 {
@@ -17,17 +20,18 @@ enum class ShaderType
 class BaseShader
 {
 public:
-	BaseShader();
+	BaseShader(BaseGameObject*);
 	virtual ~BaseShader();
 
 public:
-	virtual void Initialize();
-	virtual bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*) = 0;
+	virtual bool Render(vector<BaseGameObject*>, Camera*);
 
 public:
 	string GetName();
+	
 
 protected:
 	string m_Name;
+	BaseGameObject* m_GameObject;
 };
 

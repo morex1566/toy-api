@@ -16,7 +16,6 @@ using namespace DirectX;
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
-#include "textureclass.h"
 #include "Component.h"
 
 #include <fstream>
@@ -50,22 +49,19 @@ private:
 	};
 
 public:
-	Mesh(BaseGameObject*);
+	Mesh(BaseGameObject*, string);
 	Mesh(const Mesh&);
 	~Mesh() override;
 
-	bool Initialize(ID3D11Device*, const WCHAR*, const WCHAR*);
+	bool Initialize(ID3D11Device*, const WCHAR*);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
-	ID3D11ShaderResourceView* GetTexture();
-
 	bool LoadModel(const WCHAR*);
 	void ReleaseModel();
 
 public:
-	void Initialize() override;
 	void Update() override;
 
 private:
@@ -73,17 +69,13 @@ private:
 	void ShutdownBuffers();
 	void RenderBuffers(ID3D11DeviceContext*);
 
-	bool LoadTexture(ID3D11Device*, const WCHAR*);
-	void ReleaseTexture();
-
 	bool ReadFileCounts(const WCHAR*);
 	bool LoadDataStructures(const WCHAR*, int, int, int, int);
 
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount, m_textureCount, m_normalCount, m_faceCount;
-	Texture* m_Texture;
 
-	string route;
+	string m_Route;
 	ModelType* m_model;
 };

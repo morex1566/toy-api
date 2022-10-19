@@ -17,16 +17,17 @@
 class Texture : public BaseComponent
 {
 public:
-	Texture(BaseGameObject*);
+	Texture(BaseGameObject*, string);
 	Texture(const Texture&);
 	~Texture();
 
-	bool Initialize(ID3D11Device*, const WCHAR*);
+	bool Initialize();
 	void Shutdown();
 
 	ID3D11ShaderResourceView* GetTexture();
 
 private:
+	string m_Route;
 	ID3D11ShaderResourceView* m_texture;
 };
 

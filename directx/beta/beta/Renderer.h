@@ -1,6 +1,8 @@
 #pragma once
 #include "Component.h"
 
+class Camera;
+
 class Renderer : public BaseComponent
 {
 public:
@@ -8,12 +10,11 @@ public:
 	~Renderer();
 
 public:
-	void Initialize() override;
 	void Update() override;
-	void Render();
+	void Render(vector<BaseGameObject*>, Camera*);
 
 private:
 	virtual void renderMesh();
-	virtual void renderShader();
+	virtual void renderShader(vector<BaseGameObject*>, Camera*);
 };
 

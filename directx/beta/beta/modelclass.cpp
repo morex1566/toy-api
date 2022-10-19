@@ -2,22 +2,32 @@
 // Filename: modelclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
+#include "GameObject.h"
+#include "d3dclass.h"
 
 
-Mesh::Mesh(BaseGameObject* gameObject)
-	: BaseComponent(gameObject)
+Mesh::Mesh(BaseGameObject* gameObject, string route)
+	: BaseComponent(gameObject), m_Route(route)
 {
+	bool result;
+
 	m_Name = "Mesh";
 	m_Active = true;
 
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
-	m_Texture = 0;
 	m_model = 0;
 
 	m_textureCount = 0;
 	m_normalCount = 0;
 	m_faceCount = 0;
+
+	result = Initialize(m_GameObject->GetDirectX3D()->GetDevice(), wstring(route.begin(), route.end()).c_str());
+	if (!result)
+	{
+		MessageBox(m_GameObject->GetHWND(), L"Could not initialize the mesh.", L"Error", MB_OK);
+		exit(0);
+	}
 }
 
 
@@ -28,10 +38,11 @@ Mesh::Mesh(const Mesh& other)
 
 Mesh::~Mesh()
 {
+	Shutdown();
 }
 
 
-bool Mesh::Initialize(ID3D11Device* device, const WCHAR* modelFilename, const WCHAR* textureFilename)
+bool Mesh::Initialize(ID3D11Device* device, const WCHAR* modelFilename)
 {
 	bool result;
 
@@ -49,21 +60,12 @@ bool Mesh::Initialize(ID3D11Device* device, const WCHAR* modelFilename, const WC
 		return false;
 	}
 
-	// Load the texture for this model.
-	result = LoadTexture(device, textureFilename);
-	if(!result)
-	{
-		return false;
-	}
-
 	return true;
 }
 
 
 void Mesh::Shutdown()
 {
-	// Release the model texture.
-	ReleaseTexture();
 
 	// Shutdown the vertex and index buffers.
 	ShutdownBuffers();
@@ -87,12 +89,6 @@ void Mesh::Render(ID3D11DeviceContext* deviceContext)
 int Mesh::GetIndexCount()
 {
 	return m_indexCount;
-}
-
-
-ID3D11ShaderResourceView* Mesh::GetTexture()
-{
-	return m_Texture->GetTexture();
 }
 
 
@@ -222,43 +218,6 @@ void Mesh::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-
-bool Mesh::LoadTexture(ID3D11Device* device, const WCHAR* filename)
-{
-	bool result;
-
-
-	// Create the texture object.
-	m_Texture = new Texture;
-	if(!m_Texture)
-	{
-		return false;
-	}
-
-	// Initialize the texture object.
-	result = m_Texture->Initialize(device, filename);
-	if(!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-
-void Mesh::ReleaseTexture()
-{
-	// Release the texture object.
-	if(m_Texture)
-	{
-		m_Texture->Shutdown();
-		delete m_Texture;
-		m_Texture = 0;
-	}
-
-	return;
-}
-
 bool Mesh::LoadModel(const WCHAR* filename)
 {
 	ReadFileCounts(filename);
@@ -275,10 +234,6 @@ void Mesh::ReleaseModel()
 	}
 
 	return;
-}
-
-void Mesh::Initialize()
-{
 }
 
 void Mesh::Update()

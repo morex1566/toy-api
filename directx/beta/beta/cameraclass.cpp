@@ -4,8 +4,8 @@
 #include "cameraclass.h"
 #include "graphicsclass.h"
 
-Camera::Camera(D3DClass* directX3D, Scene* scene)
-	: BaseGameObject(directX3D)
+Camera::Camera(D3DClass* directX3D, HWND hwnd, Scene* scene)
+	: BaseGameObject(directX3D, hwnd), m_CurrentScene(scene)
 {
 	m_position.x = 0.0f;
 	m_position.y = 0.0f;
@@ -14,11 +14,13 @@ Camera::Camera(D3DClass* directX3D, Scene* scene)
 	m_rotation.x = 0.0f;
 	m_rotation.y = 0.0f;
 	m_rotation.z = 0.0f;
+
+	m_Tag = "Camera";
 }
 
 
 Camera::Camera(const Camera& other)
-	: BaseGameObject(other.m_DirectX3D)
+	: BaseGameObject(other.m_DirectX3D, other.m_HWND)
 {
 }
 
@@ -27,8 +29,16 @@ Camera::~Camera()
 {
 }
 
+void Camera::Start()
+{
+	BaseGameObject::Start();
+
+	SetPosition(0.0f, 0.0f, -5.0f);
+}
+
 void Camera::Update()
 {
+	BaseGameObject::Update();
 }
 
 
@@ -60,8 +70,10 @@ XMFLOAT3 Camera::GetRotation()
 }
 
 // This uses the position and rotation of the camera to build and to update the view matrix.
-void Camera::Render()
+void Camera::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
+	BaseGameObject::Render(gameObjectList, camera);
+
 	XMVECTOR up, position, lookAt;
 	float yaw, pitch, roll;
 	XMMATRIX rotationMatrix;
@@ -100,6 +112,11 @@ void Camera::Render()
 void Camera::GetViewMatrix(XMMATRIX& viewMatrix)
 {
 	viewMatrix = m_viewMatrix;
+}
+
+XMMATRIX Camera::GetViewMatrix()
+{
+	return m_viewMatrix;
 }
 
 Camera* Camera::SetAsMainCamera()

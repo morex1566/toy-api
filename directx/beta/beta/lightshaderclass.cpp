@@ -2,37 +2,56 @@
 // Filename: lightshaderclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "lightshaderclass.h"
+#include "GameObject.h"
+#include "d3dclass.h"
+#include "cameraclass.h"
+#include "lightclass.h"
+#include "textureclass.h"
+#include "modelclass.h"
 
-
-LightShaderClass::LightShaderClass()
-	: BaseShader()
+LightShaderClass::LightShaderClass(BaseGameObject* gameObject, string vsRoute = "", string psRoute = "")
+	: BaseShader(gameObject), m_VSRoute(vsRoute), m_PSRoute(psRoute)
 {
+	bool result;
+
 	m_vertexShader = 0;
 	m_pixelShader = 0;
 	m_layout = 0;
 	m_sampleState = 0;
 	m_matrixBuffer = 0;
 	m_lightBuffer = 0;
+
+	result = Initialize();
+	if (!result)
+	{
+		MessageBox(m_GameObject->GetHWND(), L"Could not initialize the light shader.", L"Error", MB_OK);
+		exit(0);
+	}
 }
 
 
 LightShaderClass::LightShaderClass(const LightShaderClass& other)
+	: BaseShader(other.m_GameObject)
 {
+	Initialize();
 }
 
 
 LightShaderClass::~LightShaderClass()
 {
+	Shutdown();
 }
 
 // The new light.vs and light.ps HLSL shader files are used as input to initialize the light shader.
-bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
+bool LightShaderClass::Initialize()
 {
 	bool result;
 
-
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, L"./shaders/light.vs", L"./shaders/light.ps");
+	result = InitializeShader(m_GameObject->GetDirectX3D()->GetDevice(),
+							  m_GameObject->GetHWND(),
+							  wstring(m_VSRoute.begin(), m_VSRoute.end()).c_str(),
+							  wstring(m_PSRoute.begin(), m_PSRoute.end()).c_str());
 	if(!result)
 	{
 		return false;
@@ -50,25 +69,43 @@ void LightShaderClass::Shutdown()
 	return;
 }
 
-bool LightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, 
-	XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, 
-	ID3D11ShaderResourceView* texture, 
-	XMFLOAT3 lightDirection, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor,
-	XMFLOAT3 cameraPosition, XMFLOAT4 specularColor, float specularPower)
+bool LightShaderClass::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
 	bool result;
 
-
-	// Set the shader parameters that it will use for rendering.
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture, 
-		lightDirection, ambientColor, diffuseColor, cameraPosition, specularColor, specularPower);
-	if(!result)
+	vector<Light*> lightList;
+	for (auto gameObject : gameObjectList)
 	{
-		return false;
+		if (gameObject->GetTag() == "Light")
+		{
+			lightList.push_back(dynamic_cast<Light*>(gameObject));
+		}
 	}
 
-	// Now render the prepared buffers with the shader.
-	RenderShader(deviceContext, indexCount);
+	for (auto light : lightList)
+	{
+		// Set the shader parameters that it will use for rendering.
+		result = SetShaderParameters(m_GameObject->GetDirectX3D()->GetDeviceContext(),
+				m_GameObject->GetTransform()->GetWorldMatrix(),
+				camera->GetViewMatrix(),
+				m_GameObject->GetDirectX3D()->GetProjectionMatrix(),
+				dynamic_cast<Texture*>(m_GameObject->FindComponentWithName("Texture"))->GetTexture(),
+				light->GetDirection(),
+				light->GetAmbientColor(),
+				light->GetDiffuseColor(),
+				camera->GetPosition(),
+				light->GetSpecularColor(),
+				light->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
+
+		// Now render the prepared buffers with the shader.
+		RenderShader(m_GameObject->GetDirectX3D()->GetDeviceContext(),
+					dynamic_cast<Mesh*>(m_GameObject->FindComponentWithName("Mesh"))->GetIndexCount());
+	}
+
 
 	return true;
 }

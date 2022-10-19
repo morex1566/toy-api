@@ -3,8 +3,8 @@
 #include "GameObject.h"
 #include "modelclass.h"
 #include "Script.h"
-#include "textureshaderclass.h"
 #include "Transform.h"
+#include "cameraclass.h"
 
 Renderer::Renderer(BaseGameObject* gameObject)
 	: BaseComponent(gameObject)
@@ -17,45 +17,32 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::Initialize()
-{
-}
-
 void Renderer::Update()
 {
 	
 }
 
-void Renderer::Render()
+void Renderer::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
 	renderMesh();
+	renderShader(gameObjectList, camera);
 }
 
 void Renderer::renderMesh()
 {
-	Mesh* mesh;
-	mesh = dynamic_cast<Mesh*>(m_GameObject->FindComponentWithName("Mesh"));
+	for (auto component : GetComponentList())
+	{
+		Mesh* mesh;
+		mesh = dynamic_cast<Mesh*>(component);
 
-	if(mesh) { mesh->Render(GetDirectX3D()->GetDeviceContext()); }
+		if (mesh) { mesh->Render(m_GameObject->GetDirectX3D()->GetDeviceContext()); }
+	}
 }
 
-void Renderer::renderShader()
+void Renderer::renderShader(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
-	int indexCount;
-	indexCount = dynamic_cast<Mesh*>(m_GameObject->FindComponentWithName("Mesh"))->GetIndexCount();
-
-	Transform* transform;
-	transform = dynamic_cast<Transform*>(m_GameObject->FindComponentWithName("Transform"));
-	
-
-
-	/*for (auto shader : GetShaderList())
+	for (auto shader : GetShaderList())
 	{
-		if (shader->GetName() == "TextureShader")
-		{
-			dynamic_cast<TextureShaderClass*>(shader)->Render(GetDirectX3D()->GetDeviceContext(),
-															  mesh->GetIndexCount(),
-															  );
-		}
-	}*/
+		shader->Render(gameObjectList, camera);
+	}
 }

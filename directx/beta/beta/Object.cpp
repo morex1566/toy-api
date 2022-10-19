@@ -1,16 +1,14 @@
 #include "Object.h"
-#include "Component.h"
-#include "Transform.h"
-#include "Renderer.h"
-#include "modelclass.h"
+#include "GameObject.h"
 
-Object::Object(D3DClass* directX3D)
-	: BaseGameObject(directX3D)
+Object::Object(D3DClass* directX3D, HWND hwnd)
+	: BaseGameObject(directX3D, hwnd)
 {
+	m_Tag = "Object";
 }
 
 Object::Object(const Object& other)
-	: BaseGameObject(other.m_DirectX3D)
+	: BaseGameObject(other.m_DirectX3D, other.m_HWND)
 {
 }
 
@@ -18,24 +16,21 @@ Object::~Object()
 {
 }
 
+void Object::Start()
+{
+	BaseGameObject::Start();
+
+	
+}
+
 void Object::Update()
 {
-	updateComponent();
-	updateScript();
+	BaseGameObject::Update();
+
+	m_Transform->RotateAt();
 }
 
-void Object::updateComponent()
+void Object::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
-	for (auto component : m_ComponentList)
-	{
-		component->Update();
-	}
-}
-
-void Object::updateScript()
-{
-	for (auto script : m_ScriptList)
-	{
-		script->Update();
-	}
+	BaseGameObject::Render(gameObjectList, camera);
 }

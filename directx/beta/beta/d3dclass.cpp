@@ -482,6 +482,11 @@ void D3DClass::GetOrthoMatrix(XMMATRIX& orthoMatrix)
 	return;
 }
 
+XMMATRIX D3DClass::GetProjectionMatrix()
+{
+	return m_projectionMatrix;
+}
+
 
 void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 {

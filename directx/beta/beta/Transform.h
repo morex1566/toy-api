@@ -11,7 +11,6 @@ public:
 	Transform(const Transform&);
 
 public:
-	void Initialize() override;
 	void Update() override;
 
 public:

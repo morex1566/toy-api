@@ -16,10 +16,6 @@ Transform::Transform(const Transform&)
 {
 }
 
-void Transform::Initialize()
-{
-}
-
 void Transform::Update()
 {
 }
