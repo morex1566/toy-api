@@ -70,12 +70,12 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
 	);
 
-	// Create Light
+	// Create Light...
 	gameObjectList.push_back(
 		(new Light(m_D3D, hwnd))
 	);
 
-	// Create Terrain
+	// Create Terrain...
 	gameObjectList.push_back(
 		(new Object(m_D3D, hwnd))
 		->AddComponent(ComponentType::Mesh, "./resources/terrain.obj")
@@ -114,7 +114,7 @@ void Scene::Shutdown()
 	return;
 }
 
-bool Scene::Frame()
+bool Scene::Frame(int mouseX, int mouseY)
 {
 	bool result;
 

@@ -14,16 +14,18 @@ public:
 	void Update() override;
 
 public:
+	void Move(XMFLOAT3);
+	void Rotate(XMFLOAT3);
 	void TranslateAt(XMFLOAT3);
 	void RotateAt(XMFLOAT3);
 	void Resize(XMFLOAT3);
 	void Transpose(XMFLOAT3, XMFLOAT3, XMFLOAT3);
 
 public:
-	const XMMATRIX GetWorldMatrix();
-	const XMFLOAT3 GetPosition();
-	const XMFLOAT3 GetRotation();
-	const XMFLOAT3 GetScale();
+	XMMATRIX GetWorldMatrix();
+	XMFLOAT3 GetPosition();
+	XMFLOAT3 GetRotation();
+	XMFLOAT3 GetScale();
 
 	XMFLOAT3 operator=(XMFLOAT3& ref)
 	{

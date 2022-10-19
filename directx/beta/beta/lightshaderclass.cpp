@@ -93,7 +93,7 @@ bool LightShaderClass::Render(vector<BaseGameObject*> gameObjectList, Camera* ca
 				light->GetDirection(),
 				light->GetAmbientColor(),
 				light->GetDiffuseColor(),
-				camera->GetPosition(),
+				camera->GetTransform()->GetPosition(),
 				light->GetSpecularColor(),
 				light->GetSpecularPower());
 		if (!result)

@@ -41,8 +41,10 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureclass.h" />
+    <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -68,8 +70,10 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
+    <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

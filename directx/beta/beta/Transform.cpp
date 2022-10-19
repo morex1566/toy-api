@@ -20,6 +20,20 @@ void Transform::Update()
 {
 }
 
+void Transform::Move(XMFLOAT3 position)
+{
+	m_Position.x += position.x;
+	m_Position.y += position.y;
+	m_Position.z += position.z;
+}
+
+void Transform::Rotate(XMFLOAT3 angle)
+{
+	m_Rotation.x += angle.x;
+	m_Rotation.y += angle.y;
+	m_Rotation.z += angle.z;
+}
+
 void Transform::TranslateAt(XMFLOAT3 position)
 {
 	m_Position.x = position.x;
@@ -53,22 +67,22 @@ void Transform::Transpose(XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f),
 	m_World = size * angle * movement;
 }
 
-const XMMATRIX Transform::GetWorldMatrix()
+XMMATRIX Transform::GetWorldMatrix()
 {
 	return m_World;
 }
 
-const XMFLOAT3 Transform::GetPosition()
+XMFLOAT3 Transform::GetPosition()
 {
 	return m_Position;
 }
 
-const XMFLOAT3 Transform::GetRotation()
+XMFLOAT3 Transform::GetRotation()
 {
 	return m_Rotation;
 }
 
-const XMFLOAT3 Transform::GetScale()
+XMFLOAT3 Transform::GetScale()
 {
 	return m_Scale;
 }

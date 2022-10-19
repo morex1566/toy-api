@@ -35,19 +35,11 @@ public:
 	void Render(vector<BaseGameObject*>, Camera*) override;
 
 public:
-	void SetPosition(float, float, float);
-	void SetRotation(float, float, float);
-
-	XMFLOAT3 GetPosition();
-	XMFLOAT3 GetRotation();
-
 	void GetViewMatrix(XMMATRIX&);
 	XMMATRIX GetViewMatrix();
 	Camera* SetAsMainCamera();
 
 private:
-	XMFLOAT3 m_position;
-	XMFLOAT3 m_rotation;
 	XMMATRIX m_viewMatrix;
 	Scene* m_CurrentScene;
 };

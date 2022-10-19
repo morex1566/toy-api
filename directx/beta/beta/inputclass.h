@@ -14,15 +14,37 @@ public:
 	InputManager(const InputManager&);
 	~InputManager();
 
-	void Initialize();
+	bool Initialize(HINSTANCE, HWND, int, int);
+	void Shutdown();
+	bool Frame();
 
-	void KeyDown(unsigned int);
-	void KeyUp(unsigned int);
-
-	bool IsKeyDown(unsigned int);
+	bool IsEscapePressed();
+	static bool IsKeyPressed(int);
+	static int IsMouseXAxisPressed();
+	static int IsMouseYAxisPressed();
+	static void GetMouseLocation(int&, int&);
+	static int GetMouseXLocation();
+	static int GetMouseYLocation();
 
 private:
-	bool m_keys[256];
+	bool ReadKeyboard();
+	bool ReadMouse();
+	void ProcessInput();
+
+private:
+	IDirectInput8* m_directInput;
+	IDirectInputDevice8* m_keyboard;
+	IDirectInputDevice8* m_mouse;
+
+	static int m_mouseX;
+	static int m_mouseY;
+	static int m_oldMouseX;
+	static int m_oldMouseY;
+	static unsigned char m_keyboardState[256];
+
+	DIMOUSESTATE m_mouseState;
+
+	int m_screenWidth, m_screenHeight;
 };
 
 #endif

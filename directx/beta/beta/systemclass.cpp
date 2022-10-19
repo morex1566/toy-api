@@ -41,7 +41,12 @@ bool SystemClass::Initialize()
 	}
 
 	// Initialize the input object.
-	m_InputManager->Initialize();
+	result = m_InputManager->Initialize(m_hinstance, m_hwnd, screenWidth, screenHeight);
+	if (!result)
+	{
+		MessageBox(m_hwnd, L"Could not initialize the input object.", L"Error", MB_OK);
+		return false;
+	}
 
 	m_SceneManager = new SceneManager;
 	if (!m_SceneManager)
@@ -66,6 +71,7 @@ void SystemClass::Shutdown()
 	// Release the input object.
 	if(m_InputManager)
 	{
+		m_InputManager->Shutdown();
 		delete m_InputManager;
 		m_InputManager = 0;
 	}
@@ -112,12 +118,18 @@ void SystemClass::Run()
 		{
 			// Otherwise do the frame processing.
 			result = Frame();
-			if(!result)
+			if (!result)
 			{
+				MessageBox(m_hwnd, L"Frame Processing Failed", L"Error", MB_OK);
 				done = true;
 			}
 		}
-
+		
+		// Check if the user pressed escape and wants to quit.
+		if (m_InputManager->IsEscapePressed() == true)
+		{
+			done = true;
+		}
 	}
 
 	return;
@@ -127,17 +139,29 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
+	int mouseX, mouseY;
 
 
-	// Check if the user pressed escape and wants to exit the application.
-	if(m_InputManager->IsKeyDown(VK_ESCAPE))
+	// Do the input frame processing.
+	result = m_InputManager->Frame();
+	if (!result)
 	{
 		return false;
 	}
 
+	// Get the location of the mouse from the input object,
+	m_InputManager->GetMouseLocation(mouseX, mouseY);
+
 	// Do the frame processing for the graphics object.
-	result = m_SceneManager->GetCurrentScene()->Frame();
+	result = m_SceneManager->GetCurrentScene()->Frame(mouseX, mouseY);
 	if(!result)
+	{
+		return false;
+	}
+
+	// Finally render the graphics to the screen.
+	//result = m_SceneManager->GetCurrentScene()->Render();
+	if (!result)
 	{
 		return false;
 	}
@@ -148,30 +172,7 @@ bool SystemClass::Frame()
 
 LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 {
-	switch(umsg)
-	{
-		// Check if a key has been pressed on the keyboard.
-		case WM_KEYDOWN:
-		{
-			// If a key is pressed send it to the input object so it can record that state.
-			m_InputManager->KeyDown((unsigned int)wparam);
-			return 0;
-		}
-
-		// Check if a key has been released on the keyboard.
-		case WM_KEYUP:
-		{
-			// If a key is released then send it to the input object so it can unset the state for that key.
-			m_InputManager->KeyUp((unsigned int)wparam);
-			return 0;
-		}
-
-		// Any other messages send to the default message handler as our application won't make use of them.
-		default:
-		{
-			return DefWindowProc(hwnd, umsg, wparam, lparam);
-		}
-	}
+	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
 
