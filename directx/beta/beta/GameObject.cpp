@@ -137,6 +137,11 @@ Transform* BaseGameObject::GetTransform()
 
 void BaseGameObject::Start()
 {
+	for (auto component : m_ComponentList)
+	{
+		component->Start();
+	}
+
 	for (auto script : m_ScriptList)
 	{
 		script->Start();
@@ -145,6 +150,11 @@ void BaseGameObject::Start()
 
 void BaseGameObject::Update()
 {
+	for (auto component : m_ComponentList)
+	{
+		component->Update();
+	}
+
 	for (auto script : m_ScriptList)
 	{
 		script->Update();
@@ -153,7 +163,7 @@ void BaseGameObject::Update()
 
 void BaseGameObject::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
-	dynamic_cast<Renderer*>(FindComponentWithName("Renderer"))->Render(gameObjectList, camera);
+	dynamic_cast<Renderer*>(m_Renderer)->Render(gameObjectList, camera);
 }
 
 template<typename T>

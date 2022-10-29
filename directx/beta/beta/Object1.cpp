@@ -23,8 +23,5 @@ void Object1::Update()
 {
 	rotation += 0.01f;
 
-
-	GetTransform()->Transpose(GetTransform()->GetPosition(),
-		XMFLOAT3(0.0f, rotation, 0.0f),
-		GetTransform()->GetScale());
+	GetTransform()->RotateAt(XMFLOAT3(0, rotation, 0));
 }

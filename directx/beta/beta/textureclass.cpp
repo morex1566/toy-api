@@ -73,3 +73,11 @@ ID3D11ShaderResourceView* Texture::GetTexture()
 {
 	return m_texture;
 }
+
+void Texture::Start()
+{
+}
+
+void Texture::Update()
+{
+}

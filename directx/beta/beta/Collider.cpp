@@ -10,3 +10,11 @@ Collider::Collider(BaseGameObject* gameObject)
 Collider::~Collider()
 {
 }
+
+void Collider::Start()
+{
+}
+
+void Collider::Update()
+{
+}

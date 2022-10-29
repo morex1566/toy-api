@@ -20,11 +20,13 @@ public:
 
 	bool IsEscapePressed();
 	static bool IsKeyPressed(int);
-	static int IsMouseXAxisPressed();
-	static int IsMouseYAxisPressed();
-	static void GetMouseLocation(int&, int&);
-	static int GetMouseXLocation();
-	static int GetMouseYLocation();
+	static bool IsMouseAxisPressed();
+
+public:
+	static float mouseIX;
+	static float mouseIY;
+	static DIMOUSESTATE m_currMouseState;
+	static DIMOUSESTATE m_oldMouseState;
 
 private:
 	bool ReadKeyboard();
@@ -38,11 +40,7 @@ private:
 
 	static int m_mouseX;
 	static int m_mouseY;
-	static int m_oldMouseX;
-	static int m_oldMouseY;
 	static unsigned char m_keyboardState[256];
-
-	DIMOUSESTATE m_mouseState;
 
 	int m_screenWidth, m_screenHeight;
 };

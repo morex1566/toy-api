@@ -17,6 +17,10 @@ Renderer::~Renderer()
 {
 }
 
+void Renderer::Start()
+{
+}
+
 void Renderer::Update()
 {
 	

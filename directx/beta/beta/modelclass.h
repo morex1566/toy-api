@@ -62,6 +62,7 @@ public:
 	void ReleaseModel();
 
 public:
+	void Start() override;
 	void Update() override;
 
 private:

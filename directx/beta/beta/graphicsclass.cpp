@@ -8,6 +8,7 @@
 #include "Script.h"
 #include "Object1.h"
 #include "Object2.h"	
+#include "FPSCameraScript.h"
 
 
 Scene::Scene()
@@ -50,6 +51,7 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	gameObjectList.push_back(
 		(new Camera(m_D3D, hwnd, this))
 		->SetAsMainCamera()
+		->AddScript(new FPSCameraScript)
 	);
 
 	// Create Cube...

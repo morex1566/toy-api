@@ -5,8 +5,12 @@
 
 int InputManager::m_mouseX = 0;
 int InputManager::m_mouseY = 0;
-int InputManager::m_oldMouseX = 0;
-int InputManager::m_oldMouseY = 0;
+float InputManager::mouseIX = 0;
+float InputManager::mouseIY = 0;
+
+DIMOUSESTATE InputManager::m_currMouseState = { 0, };
+DIMOUSESTATE InputManager::m_oldMouseState = { 0, };
+
 unsigned char InputManager::m_keyboardState[256] = {};
 
 InputManager::InputManager()
@@ -88,7 +92,7 @@ bool InputManager::Initialize(HINSTANCE hinstance, HWND hwnd, int screenWidth, i
 	}
 
 	// Set the cooperative level of the mouse to share with other programs.
-	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	result = m_mouse->SetCooperativeLevel(hwnd, DISCL_EXCLUSIVE | DISCL_NOWINKEY | DISCL_FOREGROUND);
 	if (FAILED(result))
 	{
 		return false;
@@ -190,7 +194,7 @@ bool InputManager::ReadMouse()
 
 
 	// Read the mouse device.
-	result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_mouseState);
+	result = m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_currMouseState);
 	if (FAILED(result))
 	{
 		// If the mouse lost focus or was not acquired then try to get control back.
@@ -211,8 +215,8 @@ bool InputManager::ReadMouse()
 void InputManager::ProcessInput()
 {
 	// Update the location of the mouse cursor based on the change of the mouse location during the frame.
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
+	m_mouseX += m_currMouseState.lX;
+	m_mouseY += m_currMouseState.lY;
 
 	// Ensure the mouse location doesn't exceed the screen width or height.
 	if (m_mouseX < 0) { m_mouseX = 0; }
@@ -247,62 +251,17 @@ bool InputManager::IsKeyPressed(int key)
 	return false;
 }
 
-int InputManager::IsMouseXAxisPressed()
+bool InputManager::IsMouseAxisPressed()
 {
-	if (m_mouseX == m_oldMouseX)
+	if ((m_currMouseState.lX != m_oldMouseState.lX) || (m_currMouseState.lY != m_oldMouseState.lY))
 	{
-		m_oldMouseX = m_mouseX;
-		return 0;
+		mouseIX = m_oldMouseState.lX * 0.001f;
+		mouseIY = m_currMouseState.lY * 0.001f;
+
+		m_oldMouseState = m_currMouseState;
+
+		return true;
 	}
 
-	if (m_mouseX > m_oldMouseX)
-	{
-		m_oldMouseX = m_mouseX;
-		return 1;
-	}
-
-	if (m_mouseX < m_oldMouseX)
-	{
-		m_oldMouseX = m_mouseX;
-		return -1;
-	}
-}
-
-int InputManager::IsMouseYAxisPressed()
-{
-	if (m_mouseY == m_oldMouseY)
-	{
-		m_oldMouseY = m_mouseY;
-		return 0;
-	}
-
-	if (m_mouseY > m_oldMouseY)
-	{
-		m_oldMouseY = m_mouseY;
-		return 1;
-	}
-
-	if (m_mouseY < m_oldMouseY)
-	{
-		m_oldMouseY = m_mouseY;
-		return -1;
-	}
-}
-
-
-void InputManager::GetMouseLocation(int& mouseX, int& mouseY)
-{
-	mouseX = m_mouseX;
-	mouseY = m_mouseY;
-	return;
-}
-
-int InputManager::GetMouseXLocation()
-{
-	return m_mouseX;
-}
-
-int InputManager::GetMouseYLocation()
-{
-	return m_mouseY;
+	return false;
 }

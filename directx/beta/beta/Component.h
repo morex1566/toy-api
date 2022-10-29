@@ -28,7 +28,8 @@ public:
 	virtual ~BaseComponent();
 
 public:
-	virtual void Update();
+	virtual void Start() = 0;
+	virtual void Update() = 0;
 
 public:
 	string GetName();

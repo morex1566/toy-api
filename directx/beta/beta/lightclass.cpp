@@ -23,6 +23,8 @@ Light::~Light()
 
 void Light::Start()
 {
+	BaseGameObject::Start();
+
 	SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	SetDirection(1.0f, 0.0f, 1.0f);
@@ -32,11 +34,7 @@ void Light::Start()
 
 void Light::Update()
 {
-}
-
-void Light::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
-{
-	BaseGameObject::Render(gameObjectList, camera);
+	BaseGameObject::Update();
 }
 
 void Light::SetAmbientColor(float red, float green, float blue, float alpha)

@@ -26,6 +26,10 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 
+public:
+	void Start() override;
+	void Update() override;
+
 private:
 	string m_Route;
 	ID3D11ShaderResourceView* m_texture;

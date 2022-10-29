@@ -236,6 +236,10 @@ void Mesh::ReleaseModel()
 	return;
 }
 
+void Mesh::Start()
+{
+}
+
 void Mesh::Update()
 {
 }

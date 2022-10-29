@@ -29,7 +29,6 @@ public:
 public:
 	void Start() override;
 	void Update() override;
-	void Render(vector<BaseGameObject*>, Camera*) override;
 
 public:
 	void SetAmbientColor(float, float, float, float);

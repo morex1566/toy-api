@@ -32,7 +32,6 @@ public:
 public:
 	void Start() override;
 	void Update() override;
-	void Render(vector<BaseGameObject*>, Camera*) override;
 
 public:
 	void GetViewMatrix(XMMATRIX&);
@@ -42,6 +41,9 @@ public:
 private:
 	XMMATRIX m_viewMatrix;
 	Scene* m_CurrentScene;
+	XMMATRIX m_cameraRotationMatrix;
+	XMVECTOR m_cameraTarget;
+	XMVECTOR m_cameraUp;
 };
 
 #endif

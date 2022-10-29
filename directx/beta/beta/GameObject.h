@@ -27,7 +27,7 @@ public:
 public:
 	virtual void Start();
 	virtual void Update();
-	virtual void Render(vector<BaseGameObject*>, Camera*);
+	void Render(vector<BaseGameObject*>, Camera*);
 
 
 public:

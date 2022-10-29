@@ -139,7 +139,7 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
-	int mouseX, mouseY;
+	int mouseX = 0, mouseY = 0;
 
 
 	// Do the input frame processing.
@@ -148,9 +148,6 @@ bool SystemClass::Frame()
 	{
 		return false;
 	}
-
-	// Get the location of the mouse from the input object,
-	m_InputManager->GetMouseLocation(mouseX, mouseY);
 
 	// Do the frame processing for the graphics object.
 	result = m_SceneManager->GetCurrentScene()->Frame(mouseX, mouseY);

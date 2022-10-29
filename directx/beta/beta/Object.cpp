@@ -19,16 +19,9 @@ Object::~Object()
 void Object::Start()
 {
 	BaseGameObject::Start();
-
-	
 }
 
 void Object::Update()
 {
 	BaseGameObject::Update();
-}
-
-void Object::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
-{
-	BaseGameObject::Render(gameObjectList, camera);
 }
