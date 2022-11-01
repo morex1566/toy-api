@@ -19,7 +19,7 @@ class Texture : public BaseComponent
 public:
 	Texture(BaseGameObject*, string);
 	Texture(const Texture&);
-	~Texture();
+	~Texture() override;
 
 	bool Initialize();
 	void Shutdown();

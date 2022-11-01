@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="AlignedAllocationPolicy.h" />
     <ClInclude Include="cameraclass.h" />
+    <ClInclude Include="Cloud.h" />
+    <ClInclude Include="CloudSetupScript.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="d3dclass.h" />
@@ -40,7 +42,13 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skydome.h" />
+    <ClInclude Include="SkydomeSetupScript.h" />
+    <ClInclude Include="skydomeshaderclass.h" />
+    <ClInclude Include="skyplaneshaderclass.h" />
     <ClInclude Include="systemclass.h" />
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainSetupScript.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="TimeManager.h" />
@@ -50,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cameraclass.cpp" />
+    <ClCompile Include="Cloud.cpp" />
+    <ClCompile Include="CloudSetupScript.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="d3dclass.cpp" />
@@ -70,7 +80,13 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Script.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skydome.cpp" />
+    <ClCompile Include="SkydomeSetupScript.cpp" />
+    <ClCompile Include="skydomeshaderclass.cpp" />
+    <ClCompile Include="skyplaneshaderclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
+    <ClCompile Include="Terrain.cpp" />
+    <ClCompile Include="TerrainSetupScript.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />

@@ -5,6 +5,7 @@ Object::Object(D3DClass* directX3D, HWND hwnd)
 	: BaseGameObject(directX3D, hwnd)
 {
 	m_Tag = "Object";
+	m_Layer = LayerType::Base;
 }
 
 Object::Object(const Object& other)

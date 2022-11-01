@@ -8,6 +8,7 @@ Light::Light(D3DClass* directX3D, HWND hwnd)
 	: BaseGameObject(directX3D, hwnd)
 {
 	m_Tag = "Light";
+	m_Layer = LayerType::Base;
 }
 
 

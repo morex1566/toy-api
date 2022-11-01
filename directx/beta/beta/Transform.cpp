@@ -125,6 +125,11 @@ XMFLOAT3 Transform::GetScale()
 	return m_Scale;
 }
 
+void Transform::SetWorldMatrix(XMMATRIX matrix)
+{
+	m_World = matrix;
+}
+
 void Transform::update()
 {
 	XMMATRIX movement = XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);

@@ -11,6 +11,18 @@
 #include "Transform.h"
 #include "Renderer.h"
 
+enum class LayerType
+{
+	Base,
+	BackGround,
+	Blend
+};
+
+enum class TagType
+{
+
+};
+
 
 class BaseGameObject
 {
@@ -32,6 +44,9 @@ public:
 
 public:
 	string GetTag();
+	LayerType GetLayer();
+	void SetTag(string);
+	void SetLayer(LayerType);
 	BaseScript* FindScriptWithName(string);
 	BaseShader* FindShaderWithName(string);
 	BaseComponent* FindComponentWithName(string);
@@ -39,6 +54,7 @@ public:
 	BaseGameObject* AddComponent(ComponentType, string = "");
 	BaseGameObject* AddComponent(BaseComponent*);
 	BaseGameObject* AddShader(ShaderType, string = "", string = "");
+	BaseGameObject* AddShader(BaseShader*);
 	BaseGameObject* AddScript(BaseScript*);
 
 	D3DClass* GetDirectX3D();
@@ -53,6 +69,7 @@ protected:
 	Transform* m_Transform;
 	Renderer* m_Renderer;
 	string m_Tag;
+	LayerType m_Layer;
 	D3DClass* m_DirectX3D;
 	HWND m_HWND;
 	vector<BaseComponent*> m_ComponentList;

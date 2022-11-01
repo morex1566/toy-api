@@ -6,7 +6,7 @@ class FPSCameraScript : public BaseScript
 public:
 	FPSCameraScript();
 	FPSCameraScript(BaseGameObject*);
-	~FPSCameraScript();
+	~FPSCameraScript() override;
 
 	void Start() override;
 	void Update() override;

@@ -2,14 +2,24 @@
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
-#include "Object.h"
 #include "Component.h"
 #include "Shader.h"
 #include "Script.h"
+
+#include "Object.h"
 #include "Object1.h"
 #include "Object2.h"	
+
 #include "FPSCameraScript.h"
 
+#include "Terrain.h"
+
+#include "Skydome.h"
+#include "SkydomeSetupScript.h"
+#include "skydomeshaderclass.h"
+
+#include "Cloud.h"
+#include "CloudSetupScript.h"
 
 Scene::Scene()
 {
@@ -46,7 +56,7 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, L"Could not initialize Direct3D.", L"Error", MB_OK);
 		return false;
 	}
-		
+
 	// Create Camera...
 	gameObjectList.push_back(
 		(new Camera(m_D3D, hwnd, this))
@@ -72,7 +82,7 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
 	);
 
-	// Create Light...
+	// Create enviroment light...
 	gameObjectList.push_back(
 		(new Light(m_D3D, hwnd))
 	);
@@ -84,6 +94,24 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		->AddComponent(ComponentType::Texture, "./resources/terrain.dds")
 		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
 	);
+
+	// Create Skydome...
+	gameObjectList.push_back(
+		(new Skydome(m_D3D, hwnd))
+		->AddComponent(ComponentType::Mesh, "./resources/sphere.obj")
+		->AddScript(new SkydomeSetupScript(m_MainCamera))
+		->AddShader(ShaderType::SkydomeShader, "./shaders/skydome.vs", "./shaders/skydome.ps")
+	);
+
+	// Create Cloud
+	gameObjectList.push_back(
+		(new Cloud(m_D3D, hwnd))
+		->AddComponent(ComponentType::Mesh, "./resources/cloudplane.obj")
+		->AddScript(new SkyplaneSetupScript(m_MainCamera))
+		->AddShader(ShaderType::SkyplaneShader, "./shaders/skyplane.vs", "./shaders/skyplane.ps")
+	);
+
+
 
 	for (auto gameObject : gameObjectList)
 	{
@@ -144,9 +172,38 @@ bool Scene::Update()
 		gameObject->Update();
 	}
 
+	m_D3D->TurnOffCulling();
+	m_D3D->TurnOffZBuffer();
+
 	for (auto gameObject : gameObjectList)
 	{
-		gameObject->Render(gameObjectList, m_MainCamera);
+		if (gameObject->GetLayer() == LayerType::BackGround)
+		{
+			gameObject->Render(gameObjectList, m_MainCamera);
+		}
+	}
+
+	m_D3D->EnableSecondBlendState();
+
+	for (auto gameObject : gameObjectList)
+	{
+		if (gameObject->GetLayer() == LayerType::Blend)
+		{
+			gameObject->Render(gameObjectList, m_MainCamera);
+		}
+	}
+
+	m_D3D->TurnOffAlphaBlending();
+	m_D3D->TurnOnCulling();
+	m_D3D->TurnOnZBuffer();
+
+
+	for (auto gameObject : gameObjectList)
+	{
+		if (gameObject->GetLayer() == LayerType::Base)
+		{
+			gameObject->Render(gameObjectList, m_MainCamera);
+		}
 	}
 
 	// Present the rendered scene to the screen.

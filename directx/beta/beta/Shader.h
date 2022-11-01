@@ -15,11 +15,14 @@ enum class ShaderType
 	ColorShader,
 	LightShader,
 	TextureShader,
+	SkydomeShader,
+	SkyplaneShader
 };
 
 class BaseShader
 {
 public:
+	BaseShader();
 	BaseShader(BaseGameObject*);
 	virtual ~BaseShader();
 
@@ -27,6 +30,7 @@ public:
 	virtual bool Render(vector<BaseGameObject*>, Camera*);
 
 public:
+	void AttachGameObject(BaseGameObject*);
 	string GetName();
 	
 

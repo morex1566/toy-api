@@ -11,6 +11,7 @@ Camera::Camera(D3DClass* directX3D, HWND hwnd, Scene* scene)
 	: BaseGameObject(directX3D, hwnd), m_CurrentScene(scene)
 {
 	m_Tag = "Camera";
+	m_Layer = LayerType::Base;
 
 	m_cameraTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	m_cameraUp = XMVectorSet(0, 1.0f, 0, 0);

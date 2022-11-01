@@ -2,7 +2,9 @@
 #include "modelclass.h"	
 #include "Collider.h"
 #include "lightshaderclass.h"
+#include "skydomeshaderclass.h"
 #include "textureclass.h"
+#include "skyplaneshaderclass.h"
 
 BaseGameObject::BaseGameObject(D3DClass* directX3D, HWND hwnd)
 {
@@ -29,6 +31,21 @@ BaseGameObject::~BaseGameObject()
 string BaseGameObject::GetTag()
 {
 	return m_Tag;
+}
+
+LayerType BaseGameObject::GetLayer()
+{
+	return m_Layer;
+}
+
+void BaseGameObject::SetTag(string tag)
+{
+	m_Tag = tag;
+}
+
+void BaseGameObject::SetLayer(LayerType layer)
+{
+	m_Layer = layer;
 }
 
 BaseScript* BaseGameObject::FindScriptWithName(string name)
@@ -103,9 +120,27 @@ BaseGameObject* BaseGameObject::AddShader(ShaderType type, string vsRoute, strin
 	case ShaderType::TextureShader:
 		break;
 
+	case ShaderType::SkydomeShader:
+		m_ShaderList.push_back(new SkyDomeShaderClass(this, vsRoute, psRoute));
+		break;
+
+	case ShaderType::SkyplaneShader:
+		m_ShaderList.push_back(new SkyPlaneShaderClass(this, vsRoute, psRoute));
+		break;
+
 	default:
 		break;
 	}
+
+	return this;
+}
+
+BaseGameObject* BaseGameObject::AddShader(BaseShader* shader)
+{
+	BaseShader* temp = shader;
+	temp->AttachGameObject(this);
+
+	m_ShaderList.push_back(temp);
 
 	return this;
 }
@@ -163,7 +198,7 @@ void BaseGameObject::Update()
 
 void BaseGameObject::Render(vector<BaseGameObject*> gameObjectList, Camera* camera)
 {
-	dynamic_cast<Renderer*>(m_Renderer)->Render(gameObjectList, camera);
+	m_Renderer->Render(gameObjectList, camera);
 }
 
 template<typename T>
