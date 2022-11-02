@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "modelclass.h"
+#include "Bitmap.h"
 #include "Script.h"
 #include "Transform.h"
 #include "cameraclass.h"
@@ -38,8 +39,11 @@ void Renderer::renderMesh()
 	{
 		Mesh* mesh;
 		mesh = dynamic_cast<Mesh*>(component);
+		if (mesh) { mesh->Render(m_GameObject->GetDirectX3D()->GetDeviceContext()); continue; }
 
-		if (mesh) { mesh->Render(m_GameObject->GetDirectX3D()->GetDeviceContext()); }
+		Bitmap* bitmap;
+		bitmap = dynamic_cast<Bitmap*>(component);
+		if (bitmap) { bitmap->Render(); continue; }
 	}
 }
 

@@ -26,7 +26,7 @@ SkyDomeShaderClass::SkyDomeShaderClass(BaseGameObject* gameObject, string vsRout
 	result = Initialize();
 	if (!result)
 	{
-		MessageBox(m_GameObject->GetHWND(), L"Could not initialize the light shader.", L"Error", MB_OK);
+		MessageBox(m_GameObject->GetHWND(), L"Could not initialize the skydomeshader.", L"Error", MB_OK);
 		exit(0);
 	}
 }
@@ -34,7 +34,14 @@ SkyDomeShaderClass::SkyDomeShaderClass(BaseGameObject* gameObject, string vsRout
 SkyDomeShaderClass::SkyDomeShaderClass(const SkyDomeShaderClass& other)
 	: BaseShader(other.m_GameObject)
 {
-	Initialize();
+	bool result;
+
+	result = Initialize();
+	if (!result)
+	{
+		MessageBox(m_GameObject->GetHWND(), L"Could not initialize the skydomeshader.", L"Error", MB_OK);
+		exit(0);
+	}
 }
 
 

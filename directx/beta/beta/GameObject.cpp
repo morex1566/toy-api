@@ -5,6 +5,7 @@
 #include "skydomeshaderclass.h"
 #include "textureclass.h"
 #include "skyplaneshaderclass.h"
+#include "terrainshaderclass.h"
 
 BaseGameObject::BaseGameObject(D3DClass* directX3D, HWND hwnd)
 {
@@ -101,7 +102,10 @@ BaseGameObject* BaseGameObject::AddComponent(ComponentType type, string route)
 
 BaseGameObject* BaseGameObject::AddComponent(BaseComponent* component)
 {
-	m_ComponentList.push_back(component);
+	BaseComponent* temp = component;
+	temp->AttachGameObject(this);
+
+	m_ComponentList.push_back(temp);
 
 	return this;
 }
@@ -126,6 +130,10 @@ BaseGameObject* BaseGameObject::AddShader(ShaderType type, string vsRoute, strin
 
 	case ShaderType::SkyplaneShader:
 		m_ShaderList.push_back(new SkyPlaneShaderClass(this, vsRoute, psRoute));
+		break;
+
+	case ShaderType::TerrainShader:
+		m_ShaderList.push_back(new TerrainShaderClass(this, vsRoute, psRoute));
 		break;
 
 	default:

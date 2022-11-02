@@ -21,6 +21,11 @@ void BaseComponent::Update()
 {
 }
 
+void BaseComponent::AttachGameObject(BaseGameObject* gameObject)
+{
+    m_GameObject = gameObject;
+}
+
 string BaseComponent::GetName()
 {
     return m_Name;

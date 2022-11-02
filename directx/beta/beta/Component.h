@@ -16,6 +16,7 @@ enum class ComponentType
 	Mesh,
 	Collider,
 	Texture,
+	Bitmap
 };
 	
 class BaseComponent
@@ -32,6 +33,7 @@ public:
 	virtual void Update() = 0;
 
 public:
+	void AttachGameObject(BaseGameObject*);
 	string GetName();
 	bool IsEnable();
 

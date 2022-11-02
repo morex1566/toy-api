@@ -28,7 +28,7 @@ void Light::Start()
 
 	SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	SetDirection(1.0f, 0.0f, 1.0f);
+	SetDirection(0.0f, -1.0f, 0.0f);
 	SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	SetSpecularPower(32.0f);
 }

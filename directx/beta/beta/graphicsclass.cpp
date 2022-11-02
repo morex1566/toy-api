@@ -13,6 +13,7 @@
 #include "FPSCameraScript.h"
 
 #include "Terrain.h"
+#include "Bitmap.h"
 
 #include "Skydome.h"
 #include "SkydomeSetupScript.h"
@@ -87,14 +88,6 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		(new Light(m_D3D, hwnd))
 	);
 
-	// Create Terrain...
-	gameObjectList.push_back(
-		(new Object(m_D3D, hwnd))
-		->AddComponent(ComponentType::Mesh, "./resources/terrain.obj")
-		->AddComponent(ComponentType::Texture, "./resources/terrain.dds")
-		->AddShader(ShaderType::LightShader, "./shaders/light.vs", "./shaders/light.ps")
-	);
-
 	// Create Skydome...
 	gameObjectList.push_back(
 		(new Skydome(m_D3D, hwnd))
@@ -109,6 +102,13 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		->AddComponent(ComponentType::Mesh, "./resources/cloudplane.obj")
 		->AddScript(new SkyplaneSetupScript(m_MainCamera))
 		->AddShader(ShaderType::SkyplaneShader, "./shaders/skyplane.vs", "./shaders/skyplane.ps")
+	);
+
+	// Create Terrains
+	gameObjectList.push_back(
+		(new Terrain(m_D3D, hwnd))
+		->AddComponent(new Bitmap("./resources/heightmap.bmp", "./resources/grass.dds", "./resources/slope.dds", "./resources/rock.dds"))
+		->AddShader(ShaderType::TerrainShader, "./shaders/terrain.vs", "./shaders/terrain.ps")
 	);
 
 

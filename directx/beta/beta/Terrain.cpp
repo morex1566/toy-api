@@ -3,6 +3,9 @@
 Terrain::Terrain(D3DClass* directX3D, HWND hwnd)
 	: BaseGameObject(directX3D, hwnd)
 {
+	m_Tag = "Terrain";
+	m_Layer = LayerType::Base;
+
 	m_width = 100;
 	m_height = 100;
 }

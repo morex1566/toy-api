@@ -16,7 +16,8 @@ enum class ShaderType
 	LightShader,
 	TextureShader,
 	SkydomeShader,
-	SkyplaneShader
+	SkyplaneShader,
+	TerrainShader
 };
 
 class BaseShader
