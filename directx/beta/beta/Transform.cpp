@@ -125,6 +125,27 @@ XMFLOAT3 Transform::GetScale()
 	return m_Scale;
 }
 
+void Transform::SetPosition(XMFLOAT3 position)
+{
+	m_Position = position;
+
+	update();
+}
+
+void Transform::SetRotation(XMFLOAT3 rotation)
+{
+	m_Rotation = rotation;
+
+	update();
+}
+
+void Transform::SetScale(XMFLOAT3 scale)
+{
+	m_Scale = scale;
+
+	update();
+}
+
 void Transform::SetWorldMatrix(XMMATRIX matrix)
 {
 	m_World = matrix;

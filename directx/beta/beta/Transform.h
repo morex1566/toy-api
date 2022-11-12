@@ -37,6 +37,9 @@ public:
 	XMFLOAT3 GetRotation();
 	XMFLOAT3 GetScale();
 
+	void SetPosition(XMFLOAT3);
+	void SetRotation(XMFLOAT3);
+	void SetScale(XMFLOAT3);
 	void SetWorldMatrix(XMMATRIX);
 private:
 	void update();

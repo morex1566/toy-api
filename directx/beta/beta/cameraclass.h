@@ -35,13 +35,26 @@ public:
 
 public:
 	void GetViewMatrix(XMMATRIX&);
-	XMMATRIX GetViewMatrix();
 	Camera* SetAsMainCamera();
 
+	XMMATRIX GetViewMatrix();
+	XMMATRIX GetReflectionViewMatrix();
+	void SetReflectionHeight(float height_);
+
 private:
-	XMMATRIX m_viewMatrix;
+	void updateStandardViewMatrix();
+	void updateReflectionViewMatrix();
+
+public:
+	float reflectionHeight;
+
+private:
 	Scene* m_CurrentScene;
+
+	XMMATRIX m_viewMatrix;
 	XMMATRIX m_cameraRotationMatrix;
+	XMMATRIX m_reflectionViewMatrix;
+
 	XMVECTOR m_cameraTarget;
 	XMVECTOR m_cameraUp;
 };

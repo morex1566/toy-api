@@ -1,5 +1,9 @@
 #pragma once
-class UI
+#include "GameObject.h"
+
+interface UI
 {
+	bool Render();
+
 };
 

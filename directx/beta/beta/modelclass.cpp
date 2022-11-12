@@ -77,10 +77,10 @@ void Mesh::Shutdown()
 }
 
 
-void Mesh::Render(ID3D11DeviceContext* deviceContext)
+void Mesh::Render()
 {
 	// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	RenderBuffers(deviceContext);
+	RenderBuffers(m_GameObject->GetDirectX3D()->GetDeviceContext());
 
 	return;
 }

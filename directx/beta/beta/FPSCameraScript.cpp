@@ -21,7 +21,7 @@ FPSCameraScript::~FPSCameraScript()
 
 void FPSCameraScript::Start()
 {
-	m_GameObject->GetTransform()->TranslateAt(XMFLOAT3(0, 20, -5.0f));
+	m_GameObject->GetTransform()->TranslateAt(XMFLOAT3(120, 20, 120));
 }
 
 void FPSCameraScript::Update()

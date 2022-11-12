@@ -15,7 +15,8 @@ enum class LayerType
 {
 	Base,
 	BackGround,
-	Blend
+	Blend,
+	UI
 };
 
 enum class TagType
@@ -51,6 +52,8 @@ public:
 	BaseShader* FindShaderWithName(string);
 	BaseComponent* FindComponentWithName(string);
 
+	vector<BaseGameObject*> GetGameObjectList();
+	BaseGameObject* CreateGameObject(BaseGameObject* gameObject);
 	BaseGameObject* AddComponent(ComponentType, string = "");
 	BaseGameObject* AddComponent(BaseComponent*);
 	BaseGameObject* AddShader(ShaderType, string = "", string = "");
@@ -65,6 +68,9 @@ private:
 	template <typename T>
 	void clearList(vector<T*>);
 
+public:
+	bool m_Enable;
+
 protected:
 	Transform* m_Transform;
 	Renderer* m_Renderer;
@@ -72,8 +78,12 @@ protected:
 	LayerType m_Layer;
 	D3DClass* m_DirectX3D;
 	HWND m_HWND;
+
 	vector<BaseComponent*> m_ComponentList;
 	vector<BaseShader*> m_ShaderList;
 	vector<BaseScript*> m_ScriptList;
+
+private:
+	vector<BaseGameObject*> m_GameObjectList;
 
 };

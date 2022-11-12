@@ -1,83 +1,64 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: lightshaderclass.h
+// Filename: fontshaderclass.h
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef _LIGHTSHADERCLASS_H_
-#define _LIGHTSHADERCLASS_H_
+#ifndef _FONTSHADERCLASS_H_
+#define _FONTSHADERCLASS_H_
 
 
 //////////////
 // INCLUDES //
 //////////////
 #include <d3d11.h>
-#include <directxmath.h>
+#include <DirectXMath.h>
 #include <d3dcompiler.h>
-
 #include <fstream>
-
-#include "Shader.h"
 
 using namespace std;
 using namespace DirectX;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Class name: LightShaderClass
+// Class name: FontShaderClass
 ////////////////////////////////////////////////////////////////////////////////
-
-class LightShaderClass : public BaseShader
+class FontShaderClass
 {
 private:
-	struct MatrixBufferType
+	struct ConstantBufferType
 	{
 		XMMATRIX world;
 		XMMATRIX view;
 		XMMATRIX projection;
 	};
 
-	struct CameraBufferType
+	struct PixelBufferType
 	{
-		XMFLOAT3 cameraPosition;
-		float padding;
-	};
-
-	struct LightBufferType
-	{
-		XMFLOAT4 ambientColor;
-		XMFLOAT4 diffuseColor;
-		XMFLOAT3 lightDirection;
-		float specularPower;
-		XMFLOAT4 specularColor;
+		XMFLOAT4 pixelColor;
 	};
 
 public:
-	LightShaderClass(BaseGameObject*, string, string);
-	LightShaderClass(const LightShaderClass&);
-	~LightShaderClass() override;
+	FontShaderClass();
+	FontShaderClass(const FontShaderClass&);
+	~FontShaderClass();
 
-	bool Initialize();
+	bool Initialize(ID3D11Device*, HWND, string, string);
 	void Shutdown();
-	bool Render(vector<BaseGameObject*>, Camera*) override;
+	bool Render(ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT4);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, const WCHAR*);
 
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, 
-		XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT3, XMFLOAT4, float);
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT4);
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
+	ID3D11Buffer* m_constantBuffer;
 	ID3D11SamplerState* m_sampleState;
-	ID3D11Buffer* m_matrixBuffer;
-	ID3D11Buffer* m_lightBuffer;
-	ID3D11Buffer* m_cameraBuffer;
-
-	string m_VSRoute;
-	string m_PSRoute;
+	ID3D11Buffer* m_pixelBuffer;
 };
 
 #endif

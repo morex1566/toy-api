@@ -10,16 +10,17 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include <string>
+#include <fstream>
 
-using namespace DirectX;
 
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
 #include "Component.h"
 
-#include <fstream>
 using namespace std;
+using namespace DirectX;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass
@@ -55,7 +56,7 @@ public:
 
 	bool Initialize(ID3D11Device*, const WCHAR*);
 	void Shutdown();
-	void Render(ID3D11DeviceContext*);
+	void Render();
 
 	int GetIndexCount();
 	bool LoadModel(const WCHAR*);

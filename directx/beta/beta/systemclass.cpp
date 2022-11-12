@@ -33,6 +33,36 @@ bool SystemClass::Initialize()
 	// Initialize the windows api.
 	InitializeWindows(screenWidth, screenHeight);
 
+	// Create the fps object.
+	m_fpsManager = new FpsClass;
+	if (!m_fpsManager)
+	{
+		return false;
+	}
+	// Initialize the fps object.
+	m_fpsManager->Initialize();
+
+
+	// Create the cpu object.
+	m_cpuManager = new CpuClass;
+	if (!m_cpuManager)
+	{
+		return false;
+	}
+	// Initialize the cpu object.
+	m_cpuManager->Initialize();
+
+
+	// Create the timer object.
+	m_timeManager = new TimerClass;
+	if (!m_timeManager)
+	{
+		return false;
+	}
+	// Initialize the timer object.
+	m_timeManager->Initialize();
+
+
 	// Create the input object.  This object will be used to handle reading the keyboard input from the user.
 	m_InputManager = new InputManager;
 	if(!m_InputManager)
@@ -80,6 +110,24 @@ void SystemClass::Shutdown()
 	{
 		delete m_SceneManager;
 		m_SceneManager = 0;
+	}
+
+	if (m_timeManager)
+	{
+		delete m_timeManager;
+		m_timeManager = nullptr;
+	}
+
+	if (m_cpuManager)
+	{
+		delete m_cpuManager;
+		m_cpuManager = nullptr;
+	}
+
+	if (m_fpsManager)
+	{
+		delete m_fpsManager;
+		m_fpsManager = nullptr;
 	}
 
 	// Shutdown the window.
@@ -139,8 +187,11 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
-	int mouseX = 0, mouseY = 0;
 
+	// Update the system stats.
+	m_timeManager->Frame();
+	m_fpsManager->Frame();
+	m_cpuManager->Frame();
 
 	// Do the input frame processing.
 	result = m_InputManager->Frame();
@@ -150,7 +201,9 @@ bool SystemClass::Frame()
 	}
 
 	// Do the frame processing for the graphics object.
-	result = m_SceneManager->GetCurrentScene()->Frame(mouseX, mouseY);
+	result = m_SceneManager->GetCurrentScene()->Frame(
+		m_fpsManager->GetFps(), m_cpuManager->GetCpuPercentage(), m_timeManager->GetTime()
+	);
 	if(!result)
 	{
 		return false;

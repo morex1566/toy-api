@@ -14,6 +14,7 @@
 #include "lightshaderclass.h"
 #include "lightclass.h"
 #include "utility.h"
+#include "textclass.h"
 
 /////////////
 // GLOBALS //
@@ -37,18 +38,21 @@ public:
 
 	bool Initialize(int, int, HWND);
 	void Shutdown();
-	bool Frame(int, int);
+	bool Frame(int, int, int);
 	string GetName();
 
 private:
+	bool Start();
 	bool Update();
+	bool Render();
 
 private:
-	string m_Name;
-	D3DClass* m_D3D;
-	Camera* m_MainCamera;
+	string					m_Name;
+	Camera*					m_MainCamera;
+	BaseGameObject*			m_RootGameObject;
 
-	vector<BaseGameObject*> gameObjectList;
+	TextClass* m_text;
+	D3DClass* m_D3D;
 };
 
 #endif

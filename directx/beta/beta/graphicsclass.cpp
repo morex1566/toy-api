@@ -22,6 +22,8 @@
 #include "Cloud.h"
 #include "CloudSetupScript.h"
 
+#include "UI.h"
+
 Scene::Scene()
 {
 	m_D3D = 0;
@@ -58,15 +60,21 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_RootGameObject = new BaseGameObject(m_D3D, hwnd);
+	if (!m_RootGameObject)
+	{
+		return false;
+	}
+
 	// Create Camera...
-	gameObjectList.push_back(
-		(new Camera(m_D3D, hwnd, this))
+	m_RootGameObject->CreateGameObject((new Camera(m_D3D, hwnd, this))
 		->SetAsMainCamera()
 		->AddScript(new FPSCameraScript)
 	);
 
+
 	// Create Cube...
-	gameObjectList.push_back(
+	m_RootGameObject->CreateGameObject(
 		(new Object(m_D3D, hwnd))
 		->AddComponent(ComponentType::Mesh, "./resources/cube.obj")
 		->AddComponent(ComponentType::Texture, "./resources/seafloor.dds")
@@ -75,7 +83,7 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	);
 
 	// Create Cube...
-	gameObjectList.push_back(
+	m_RootGameObject->CreateGameObject(
 		(new Object(m_D3D, hwnd))
 		->AddComponent(ComponentType::Mesh, "./resources/cube.obj")
 		->AddComponent(ComponentType::Texture, "./resources/seafloor.dds")
@@ -84,36 +92,40 @@ bool Scene::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	);
 
 	// Create enviroment light...
-	gameObjectList.push_back(
+	m_RootGameObject->CreateGameObject(
 		(new Light(m_D3D, hwnd))
 	);
 
-	// Create Skydome...
-	gameObjectList.push_back(
-		(new Skydome(m_D3D, hwnd))
-		->AddComponent(ComponentType::Mesh, "./resources/sphere.obj")
-		->AddScript(new SkydomeSetupScript(m_MainCamera))
-		->AddShader(ShaderType::SkydomeShader, "./shaders/skydome.vs", "./shaders/skydome.ps")
-	);
+	//// Create Skydome...
+	//gameObjectList.push_back(
+	//	(new Skydome(m_D3D, hwnd))
+	//	->AddComponent(ComponentType::Mesh, "./resources/sphere.obj")
+	//	->AddScript(new SkydomeSetupScript(m_MainCamera))
+	//	->AddShader(ShaderType::SkydomeShader, "./shaders/skydome.vs", "./shaders/skydome.ps")
+	//);
 
-	// Create Cloud
-	gameObjectList.push_back(
-		(new Cloud(m_D3D, hwnd))
-		->AddComponent(ComponentType::Mesh, "./resources/cloudplane.obj")
-		->AddScript(new SkyplaneSetupScript(m_MainCamera))
-		->AddShader(ShaderType::SkyplaneShader, "./shaders/skyplane.vs", "./shaders/skyplane.ps")
-	);
+	//// Create Cloud
+	//gameObjectList.push_back(
+	//	(new Cloud(m_D3D, hwnd))
+	//	->AddComponent(ComponentType::Mesh, "./resources/cloudplane.obj")
+	//	->AddScript(new SkyplaneSetupScript(m_MainCamera))
+	//	->AddShader(ShaderType::SkyplaneShader, "./shaders/skyplane.vs", "./shaders/skyplane.ps")
+	//);
 
 	// Create Terrains
-	gameObjectList.push_back(
+	m_RootGameObject->CreateGameObject(
 		(new Terrain(m_D3D, hwnd))
 		->AddComponent(new Bitmap("./resources/heightmap.bmp", "./resources/grass.dds", "./resources/slope.dds", "./resources/rock.dds"))
 		->AddShader(ShaderType::TerrainShader, "./shaders/terrain.vs", "./shaders/terrain.ps")
 	);
 
+	// Create text
+	m_text = dynamic_cast<TextClass*>(
+		new TextClass(m_D3D, hwnd, "./resources/fontdata.txt", "./resources/font.dds", "./shaders/font.vs", "./shaders/font.ps",
+		screenWidth, screenHeight)
+		);
 
-
-	for (auto gameObject : gameObjectList)
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		gameObject->Start();
 	}
@@ -133,20 +145,31 @@ void Scene::Shutdown()
 	}
 
 	// Release the bunch of gameObject.
-	for (auto gameObject : gameObjectList)
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		delete gameObject;
 	}
-
-	gameObjectList.clear();
-	vector<BaseGameObject*>().swap(gameObjectList);
 	
 	return;
 }
 
-bool Scene::Frame(int mouseX, int mouseY)
+bool Scene::Frame(int fps, int cpu, int time)
 {
 	bool result;
+
+	// Set the frames per second.
+	result = m_text->SetFps(fps, m_D3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
+
+	// Set the cpu usage.
+	result = m_text->SetCpu(cpu, m_D3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
 
 	// Render the graphics scene.
 	result = Update();
@@ -163,11 +186,29 @@ string Scene::GetName()
 	return m_Name;
 }
 
+bool Scene::Start()
+{
+	return false;
+}
+
 bool Scene::Update()
 {	
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
-	for (auto gameObject : gameObjectList)
+	// set ui layer position
+	Transform* transfrom = m_text->GetTransform();
+	transfrom->SetPosition(m_MainCamera->GetTransform()->GetPosition());
+	transfrom->SetRotation(m_MainCamera->GetTransform()->GetRotation());
+	m_text->GetTransform()->MoveByLocal(XMFLOAT3(0, 0, 2));
+
+	// game objects collision check
+
+
+	// game objects physics check
+
+
+	// game objects script udpate
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		gameObject->Update();
 	}
@@ -175,21 +216,23 @@ bool Scene::Update()
 	m_D3D->TurnOffCulling();
 	m_D3D->TurnOffZBuffer();
 
-	for (auto gameObject : gameObjectList)
+	// game objects no z buffer rendering
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		if (gameObject->GetLayer() == LayerType::BackGround)
 		{
-			gameObject->Render(gameObjectList, m_MainCamera);
+			gameObject->Render(m_RootGameObject->GetGameObjectList(), m_MainCamera);
 		}
 	}
 
 	m_D3D->EnableSecondBlendState();
 
-	for (auto gameObject : gameObjectList)
+	// game objects with z buffer rendering
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		if (gameObject->GetLayer() == LayerType::Blend)
 		{
-			gameObject->Render(gameObjectList, m_MainCamera);
+			gameObject->Render(m_RootGameObject->GetGameObjectList(), m_MainCamera);
 		}
 	}
 
@@ -198,16 +241,29 @@ bool Scene::Update()
 	m_D3D->TurnOnZBuffer();
 
 
-	for (auto gameObject : gameObjectList)
+	for (auto gameObject : m_RootGameObject->GetGameObjectList())
 	{
 		if (gameObject->GetLayer() == LayerType::Base)
 		{
-			gameObject->Render(gameObjectList, m_MainCamera);
+			gameObject->Render(m_RootGameObject->GetGameObjectList(), m_MainCamera);
 		}
 	}
+
+	m_D3D->TurnOffZBuffer();
+	m_D3D->TurnOnAlphaBlending();
+	// ui text rendering
+	m_text->Render(m_D3D->GetDeviceContext(), m_text->GetTransform()->GetWorldMatrix(), m_MainCamera->GetViewMatrix(), m_D3D->GetOrthoMatrix());
+
+	m_D3D->TurnOnZBuffer();
+	m_D3D->TurnOffAlphaBlending();
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
 
 	return true;
+}
+
+bool Scene::Render()
+{
+	return false;
 }

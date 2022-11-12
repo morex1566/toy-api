@@ -611,6 +611,16 @@ void D3DClass::GetOrthoMatrix(XMMATRIX& orthoMatrix)
 	return;
 }
 
+XMMATRIX D3DClass::GetWorldMatrix()
+{
+	return m_worldMatrix;
+}
+
+XMMATRIX D3DClass::GetOrthoMatrix()
+{
+	return m_orthoMatrix;
+}
+
 XMMATRIX D3DClass::GetProjectionMatrix()
 {
 	return m_projectionMatrix;

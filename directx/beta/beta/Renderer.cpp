@@ -39,7 +39,7 @@ void Renderer::renderMesh()
 	{
 		Mesh* mesh;
 		mesh = dynamic_cast<Mesh*>(component);
-		if (mesh) { mesh->Render(m_GameObject->GetDirectX3D()->GetDeviceContext()); continue; }
+		if (mesh) { mesh->Render(); continue; }
 
 		Bitmap* bitmap;
 		bitmap = dynamic_cast<Bitmap*>(component);

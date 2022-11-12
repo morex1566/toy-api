@@ -59,17 +59,10 @@ void SceneManager::LoadSceneWithName(const char* name)
 
 void SceneManager::clearAllScene()
 {
-    // delete current scene.
-    if (m_CurrentScene)
-    {
-        m_CurrentScene->Shutdown();
-        delete m_CurrentScene;
-        m_CurrentScene = 0;
-    }
-
     // delete all stored scene.
     for (auto scene : m_SceneList)
     {
+        scene->Shutdown();
         delete scene;
     }
     m_SceneList.clear();

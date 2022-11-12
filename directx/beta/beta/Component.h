@@ -16,7 +16,8 @@ enum class ComponentType
 	Mesh,
 	Collider,
 	Texture,
-	Bitmap
+	Bitmap,
+	Text
 };
 	
 class BaseComponent

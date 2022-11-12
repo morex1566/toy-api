@@ -11,6 +11,7 @@ BaseGameObject::BaseGameObject(D3DClass* directX3D, HWND hwnd)
 {
 	m_DirectX3D = directX3D;
 	m_HWND = hwnd;
+	m_Enable = true;
 
 	m_Transform = new Transform(this);
 	m_Renderer = new Renderer(this);
@@ -25,6 +26,7 @@ BaseGameObject::BaseGameObject(const BaseGameObject&)
 
 BaseGameObject::~BaseGameObject()
 {
+	clearList(m_ComponentList);
 	clearList(m_ShaderList);
 	clearList(m_ScriptList);
 }
@@ -75,6 +77,19 @@ BaseComponent* BaseGameObject::FindComponentWithName(string name)
 		if (component->GetName() == name) { return component; }
 	}
 	return nullptr;
+}
+
+vector<BaseGameObject*> BaseGameObject::GetGameObjectList()
+{
+	return m_GameObjectList;
+}
+
+BaseGameObject* BaseGameObject::CreateGameObject(BaseGameObject* gameObject)
+{
+	m_GameObjectList.push_back(gameObject);
+	gameObject->m_GameObjectList = m_GameObjectList;
+
+	return gameObject;
 }
 
 BaseGameObject* BaseGameObject::AddComponent(ComponentType type, string route)

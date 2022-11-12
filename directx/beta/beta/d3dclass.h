@@ -46,6 +46,8 @@ public:
 	void GetProjectionMatrix(XMMATRIX&);
 	void GetWorldMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
+	XMMATRIX GetWorldMatrix();
+	XMMATRIX GetOrthoMatrix();
 	XMMATRIX GetProjectionMatrix();
 
 	void GetVideoCardInfo(char*, int&);

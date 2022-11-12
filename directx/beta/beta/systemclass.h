@@ -23,6 +23,9 @@
 #include "inputclass.h"
 #include "graphicsclass.h"
 #include "SceneManager.h"
+#include "cpuclass.h"
+#include "fpsclass.h"
+#include "timerclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +54,9 @@ private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 
+	TimerClass* m_timeManager;
+	CpuClass* m_cpuManager;
+	FpsClass* m_fpsManager;
 	InputManager* m_InputManager;
 	SceneManager* m_SceneManager;
 };
